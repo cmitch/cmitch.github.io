@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 Cloth Simulator</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2018</h1>
+<h1 align="middle">Project 4: Cloth Simulator</h1>
+<h2 align="middle">Chris Mitchell, CS184-afm</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>For this project I implemented a simple mass-and-spring model to simulate the actions of a piece of cloth. This involved constructing the necessary data structures and implemented the necessary algorithms to model this simulation.</p>
+
+<h2 align="middle">Part I: Masses and springs</h2>
+
+<p> 
+  In this part I created the core data structure: the cloth. The cloth is made of point masses in a grid framework connected by springs. We have the core structural springs connecting the ones directly adjacents, and we also having shearing ones at diagonals and bending ones connecting to further points so this way the fabric not only keeps it shape but has the proper resistances to motion.
+</p>
+
+  <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/q1noshear.png" width="480px" />
+                    <figcaption align="middle">Wire frame without shearing</figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q1shear.png" width="480px" />
+                    <figcaption align="middle">Wire Frame with only shearing</figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q1all.png" width="480px" />
+                    <figcaption align="middle">Wire frame with shearing, strucutral, and bending springs</figcaption>
+               </td>
+                </tr>
+                </table>
+              </div>
+
+<h2 align="middle">Part II: Simulation via Numerical Integration</h2>
+
+<p>
+  To actually simulate the motion of the cloth, I calculated the force of each spring using Hooke's Law and used Verlet Integration to calculate the new position after each timestep. I also included constraints on the maximum amount of deformity of the springs allowed in order to keep them from being unreasonably deformed (I set this max to 10% increase in length).
+
+  </p>
+
+<div align="center">
+            <table style="width=100%">
+                <tr>
+                <td align="middle">
+                    <img src="images/q2ks500.png" width="480px" />
+                    <figcaption align="middle">ks=500</figcaption>
+               </td>
+                <td align="middle">
+                    <img src="images/q2ks5000.png" width="480px" />
+                    <figcaption align="middle">ks=5000 (default)</figcaption>
+               </td>
+                <td align="middle">
+                    <img src="images/q2ks50000.png" width="480px" />
+                    <figcaption align="middle">ks=50000</figcaption>
+               </td>
+              </tr>
+          </table>
+    </div>
+
+
+  <p>
+    We can change the parameters of the springs and see different results in our simulations. The ks value of our spring (the coefficient in Hooke's Law) is directly correlated with the "stiffness" of the cloth. The cloth sags more for smaller values and less for larger values as it is more resistant to motion.
+  </p>
+
+    <div align="center">
+            <table style="width=100%">
+                <tr>
+                <td align="middle">
+                    <img src="images/q2damp0.png" width="480px" />
+                    <figcaption align="middle">0% dampening</figcaption>
+               </td>
+                <td align="middle">
+                    <img src="images/q2damp0_2.png" width="480px" />
+                    <figcaption align="middle">.2% dampening (default)</figcaption>
+               </td>
+                <td align="middle">
+                    <img src="images/q2damp1.png" width="480px" />
+                    <figcaption align="middle">1% dampening</figcaption>
+               </td>
+              </tr>
+          </table>
+    </div>
+
+
+    <p>
+        Changing the dampening factor in the Verlet Integration algorithm changes how resistant to motion the cloth is. For 0 dampening for the 2 pinned simulation, the cloth not only falls faster but also doesn't slow down much when falling, so instead of going to a rest position hanging, the cloth instead begins to wrap up upon itself, with ripples throughout.  
+    </p>
+
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                <td align="middle">
+                    <img src="images/q2density1.png" width="480px" />
+                    <figcaption align="middle">Density = 1g/cm^3</figcaption>
+               </td>
+                <td align="middle">
+                    <img src="images/q2density15.png" width="480px" />
+                    <figcaption align="middle">Density = 15g/cm^3</figcaption>
+               </td>
+                <td align="middle">
+                    <img src="images/q2density150.png" width="480px" />
+                    <figcaption align="middle">Density = 150g/cm^3</figcaption>
+               </td>
+              </tr>
+          </table>
+    </div>
+
+
+<p>
+  Changing the density changes the weight of each individual point masses, being similar to changing the total "weight" of the cloth. A larger density causes the cloth to sag more, and a smaller density causes the cloth to sag less.
+</p>
+
+
+<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/q2.png" width="480px" />
+                    <figcaption align="middle">Simulation with 4 pins</figcaption>
+               </td>
+              </tr>
+          </table>
+    </div>
+
+<h2 align="middle">Part III: Handling Collisions with Other Objects</h2>
+
+
+<p>
+  I implemented correctional forces to prevent the cloth from clipping through a sphere and a plane. This mainly consisted of calculating for each point mass if there had been a collision by using the geometric properties of these objects and then adding a correctional force to the last position to "undo" any clipping that may have occurred. 
+</p>
+
+<p>
+  Below are screenshots of the cloth with different ks values. We can see the differences in how flat the cloth is on the sphere. We see for ks=500, the cloth droops down pretty much completely but is still able to maintain its shape. However, for ks=50000, the cloth ends are raised up away from the sphere much more than in the other ones, simulating a "stiff" cloth.
+  </p>
+
+
+<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/q3ks500.png" width="480px" />
+                    <figcaption align="middle">ks = 500</figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q3ks5000.png" width="480px" />
+                    <figcaption align="middle">ks = 5000</figcaption>
+               </td>
+                </tr>
+                <tr>
+                    <td align="middle">
+                    <img src="images/q3ks50000.png" width="480px" />
+                    <figcaption align="middle">ks = 50000</figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q3flat.png" width="480px" />
+                    <figcaption align="middle">Cloth lying flat on plane</figcaption>
+               </td>
+       
+
+                </tr>
+                </table>
+              </div>
+
+<h2 align="middle">Part IV: Handling Self-Collisions</h2>
+
+<p>
+  While collisions have already been handled, self-collisions, or collisions of the cloth with itself, have not been handled. I handle this by treating each point mass a sphere and using this model to calculate intersections and correctional vectors just like in part III. I create a hash table with a hash such that point masses close to each map to the same hash. This way, similar to a bounding volume hierarchy, there is no need to iterate over every point mass collisions with every other point mass.
+</p>
+
+<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/q4_2.png" width="480px" />
+                    <figcaption align="middle"></figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q4_3.png" width="480px" />
+                    <figcaption align="middle"></figcaption>
+               </td>
+                </tr>
+                <tr>
+                    <td align="middle">
+                    <img src="images/q4_4.png" width="480px" />
+                    <figcaption align="middle"></figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q4_5.png" width="480px" />
+                    <figcaption align="middle"></figcaption>
+               </td>
+       
+
+                </tr>
+                </table>
+              </div>
+
+    <p>
+      Increasing the dampening decreases the rate the cloth falls, but also how easily it folds onto itself. The 0% dampening fell much faster than the 1% and created many tight folds onto itself, while the 1% took much longer.
+    </p>
+
+
+<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/q4_0damp.png" width="480px" />
+                    <figcaption align="middle">0% Dampening</figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q4_1damp.png" width="480px" />
+                    <figcaption align="middle">1% Dampening</figcaption>
+               </td>
+                </tr>
+                </table>
+              </div>
+
+<p>
+  A larger Hooke's Law coefficient ks lead to larger gaps in the cloth folds, while a smaller ks lead to small ripples throughout and small folds as well.
+
+</p>
+
+
+<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/q4_ks500.png" width="480px" />
+                    <figcaption align="middle">ks = 500</figcaption>
+               </td>
+                    <td align="middle">
+                    <img src="images/q4_ks50000.png" width="480px" />
+                    <figcaption align="middle">ks = 50000</figcaption>
+               </td>
+                </tr>
+                </table>
+              </div>
+
+
+
+
+
+</body>
+</html>
