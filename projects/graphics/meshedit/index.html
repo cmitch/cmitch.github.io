@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 Mesh Editor</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2018</h1>
+<h1 align="middle">Project 2: Mesh Editor</h1>
+<h2 align="middle">Chris Mitchell, CS184-ahn</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the project.</p>
+
+<h2 align="middle">Section I: Bezier Curves and Surfaces</h2>
+
+<h3 align="middle">Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+
+<p>de Casteljau subdivision relies on the repeated application of weighted linear interpolation between the provided control points. As linear interpolation returns a single point for each pair of adjacent points, each application of linear interpolation creates a new layer of points to interpolate. This eventually converges to a single point. We can view this point as c(t), with t being the weighting for our linear interpolation and c : [0,1] -> desired curve. Repeatedly sampling this function c for different values of t allow us to effectively sample some larger degree polynomial through these smaller, easier-to-optimize linear interpolations of vectors.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Original points</figcaption>
+      </td>
+      <td>
+        <img src="images/q1_step1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Step 1.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/q1_step2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Step 2</figcaption>
+      </td>
+      <td>
+        <img src="images/q1_step3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Step 3</figcaption>
+      </td>
+    </tr>
+        <tr>
+      <td>
+        <img src="images/q1_step4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Step 4</figcaption>
+      </td>
+      <td>
+        <img src="images/q1_step5.png" align="middle" width="400px"/>
+        <figcaption align="middle">Step 5: Final Point</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/q1_step0.png" align="middle" width="400px"/>
+        <figcaption align="middle">Final Curve without intermediaries</figcaption>
+      </td>
+      <td>
+        <img src="images/q1_shifted.png" align="middle" width="400px"/>
+        <figcaption align="middle">New Arrangment of Points</figcaption>
+      </td>
+    </tr>
+        <tr>
+      <td>
+        <img src="images/q1_lowt.png" align="middle" width="400px"/>
+        <figcaption align="middle">Lower t for New Arrangement</figcaption>
+      </td>
+      <td>
+        <img src="images/q1_hight.png" align="middle" width="400px"/>
+        <figcaption align="middle">Higher t for New Arrangement</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau subdivision</h3>
+
+<p> Separable 1D de Casteljau subdivision is in essence the same calculation as for 2D Bezier curves. However, instead of just sampling a single value t, we sample at values (u, v) in [0,1]^2. Along one axis, we perform the same steps as before to create curves weighted with u, and then we interpolate all these curves weighted by v in the same manner as perform, essentially just performing de Casteljau's algorithm onto itself.
+</p>
+
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q2_teapotpre.png" align="middle" width="400px"/>
+        <figcaption align="middle">Grid Structure Prior to Applying de Casteljau's</figcaption>
+      </td>
+      <td>
+        <img src="images/q2_teapotpost.png" align="middle" width="400px"/>
+        <figcaption align="middle">After Applying de Casteljau's and Shading</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h2 align="middle">Section II: Sampling</h2>
+
+<h3 align="middle">Part 3: Average normals for half-edge meshes</h3>
+
+
+<p>
+  In this part, I implemented a function that when applied to a vertex calculated the area-weighted average of the vectors normal to each of the adjacent faces using the cross product. A normalized version of this vector is returned, to be considered the direction most accurately "normal" to the vertex itself, which is then used to calculate the quantity of shading around said vertex. 
+</p>
+
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q3_woutnormave.png" align="middle" width="400px"/>
+        <figcaption align="middle">Without Smoothed Normals</figcaption>
+      </td>
+      <td>
+        <img src="images/q3_wnormave.png" align="middle" width="400px"/>
+        <figcaption align="middle">With Smoothed Normals</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+<h3 align="middle">Part 4: Half-edge flip</h3>
+
+<p>
+  I implemented the half-edge flip operator through various pointer reassignments. By traversing the local mesh area with twin() and next(), I was able to find the new vertices that the given edge was going to connect. From there the main issue was making sure that every single pointer still had proper assignment. I found reassigning all the pointers for each half-edge using the setNeighbors() function a good starting point as I removed unneeded assignments. 
+</p>
+  <p>
+  The biggest issue I had when debugging was due to the nature of the half-edge mesh itself: while going from a half-edge to an edge, vertex, or face is well-defined and is guaranteed to give you a specific object, going the other way can return any valid half-edge, of which there can be many. Once I made sure to account for this for every type of object, my code ran smoothly.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q4_preflip.png" align="middle" width="400px"/>
+        <figcaption align="middle">Before Flipping</figcaption>
+      </td>
+      <td>
+        <img src="images/q4_flipped.png" align="middle" width="400px"/>
+        <figcaption align="middle">After Flipping</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+<h3 align="middle">Part 5: Half-edge split</h3>
+
+<p>
+  For splitting a half-edge, as with flipping one, the main implementation is basically a lot of pointer reassignments. For spllitting in particular, there are many different objects and directions to manage and some to create, making this more difficult than the flipping case. 
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q5_presplit1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Before Splits</figcaption>
+      </td>
+      <td>
+        <img src="images/q5_split1.png" align="middle" width="400px"/>
+        <figcaption align="middle">After Splits</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/q5_presplit2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Before Splits and Flips</figcaption>
+      </td>
+      <td>
+        <img src="images/q5_split2.png" align="middle" width="400px"/>
+        <figcaption align="middle">After Splits and Flips</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<h3 align="middle">Part 6: Loop subdivision for mesh upsampling</h3>
+
+ <p>
+  For loop subdivision, I first iterated over all the preexisting vertices and calculated their new locations. Then I iterated over all edges and split each edge, and then proceeded to flip each edge connecting an old and a new vertex. During this iteration I also calculated the position of the new vertices. After all these initial iterations, I went over all the vertices one last time and assigned the position value of each vertex to the new position value I stored earlier.
+ </p>
+<p>
+  The trickiest part about implementing loop subdivision itself was making sure I was only performing work on the correct vertices or edges without causing infinite loops. However, most of the issues I had to address were bugs in my half-edge flip and half-edge split methods. Initially these methods appeared to be working properly, but after upsampling it quickly became clear that there were issues with their implementation.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q6-0.png" align="middle" width="400px"/>
+        <figcaption align="middle">No Subdivisions</figcaption>
+      </td>
+      <td>
+        <img src="images/q6-1.png" align="middle" width="400px"/>
+        <figcaption align="middle">1 Subdivision</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/q6-2.png" align="middle" width="400px"/>
+        <figcaption align="middle">2 Subdivisions</figcaption>
+      </td>
+      <td>
+        <img src="images/q6-4.png" align="middle" width="400px"/>
+        <figcaption align="middle">3 Subdivisions</figcaption>
+      </td>
+    </tr>
+  </table>
+  <table>
+  <tr>
+      <td>
+        <img src="images/q6-5.png" align="middle" width="400px"/>
+        <figcaption align="middle">4 Subdivisions</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h2 align="middle">Section III: Further Progress</h2>
+
+<p>
+  If I were to work on this further, I would implement other subdivision schemes and also support with surface boundaries. I would also test out other COLLADA.dae files, possibly some of my own.
+</p>
+
+</body>
+</html>

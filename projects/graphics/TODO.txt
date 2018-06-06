@@ -1,0 +1,15 @@
+General:
+Photo option switching code
+
+Proj1:
+Hardcore optionalities
+Alternate types of sampling?
+
+Proj2:
+Video for Bezier Curve
+Mesh Object
+Further Work to be Done
+
+Proj4:
+Videos or gifs of simulations
+Further Work to be Done
