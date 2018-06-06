@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Chris Mitchell  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3: PathTracer</h1>
+    <h2 align="middle">Chris Mitchell</h2>
+
+
+    <h2 align="middle">Part 1: Ray Generation and Intersection</h2>
+        <p>In part 1, I generated rays to pass through each pixel, calculated their intersections, and used this information to determine how illuminated each pixel should be. </p>
+        <p>
+            Ray generation consisted of generating random points within the frame of the pixel for each sample we wanted. From here, I transformed the rays to be in the camera space and finally to the world space. This mainly involved affine transformations based on the position and angles of the camera. Each ray is then passed into another function to estimate the total global illumination, which are all averaged and return to determine the color intensity for each pixel.
+        </p>
+
+        <p>
+           I implemented ray intersections for both triangles and spheres. For triangles, I applied the <a href="www.scratchpixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection" >Moller Trumbore Algorithm </a>, which, in a manner similar to barycentric coordinates, allowed me to calculate where the ray would intersect the triangle relative to the vertices and also relative to the ray's path. If either of these intersection locations were invalid, whether the ray location is invalid or the location within the triangle, the ray doesn't intersect with the triangle. If it does intersect, then I updated the intersect information for the rest of the code to be able to calculate the color of the subpixel point.
+        </p>
+
+        <p>
+            For spheres, I used a similar algorithm to Moller Trumbore. Recognizing that a ray can be written as:
+        </p>
+
+        <p align="middle"><pre align="middle">r(t) = o + td, 0 <= t < inf</pre></p>
+        <p> 
+            and that all points on a sphere satisfy:
+        </p>
+
+        <p align="middle"><pre align="middle">(p - c)^2 = R^2</pre></p>
+        <p>
+            I solved the resulting quadratic and checked the possible intersection points to see if any were valid, and if so, which one is the first intersection.
+        </p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1CBSpheres.png" width="480px" />
+                    <figcaption align="middle">CBSpheres DAE Rendering</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/part1bench.png" width="480px" />
+                    <figcaption align="middle">Bench Rendering</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/part1coil.png" width="480px" />
+                    <figcaption align="middle">Coil Rendering</figcaption>
+                </td>
+                </tr>
+            </table>
+        </div>
+
+        <h2 align="middle">Part 2: Bounding Volume Hierarchy</h2>
+
+        <p>
+            To create the Bounding Volume Hierarchy (BVH), I first calculated a bounding box for the collection of primitives and another bounding the centroids of the primitives I used the former to create a new node and the latter for splitting the primitives up. I found the longest axis of this centroid box, took the midpoint, and sorted the primitives based on which side of this point their centroid lands. Then I recursively called this function on each set to make the right and left nodes for the node I created above, with the base case of there being only a small amount of primitives, in which case they are just directly added to the node instead of splitting. 
+        </p>
+        <p>
+            For BVH intersection, I implemented bbox intersection as seen in class and used it as a heuristic for traversing the BVH. If a ray didn't intersect the bounding box of a node, that branch was no longer traversed. If it did however, the branch is traversed and the check repeats itself. This occurs until branches can no longer be traversed, whether due to reaching leaf nodes or having no remaining nodes that have a chance of intersecting the ray. At this point, I run the intersection algorithms for each primitive, allowing the intersection object to store the object first hit by said ray.
+        </p>
+
+    <p>
+        Performance wise, this is drastically faster than using a single node with all primitives as children. Before it took roughly a minute to render the Cow.dae file on the hive computers with 8 cores. Now I can render the same file on a VM with 2 cores in roughly ten seconds. The centroid approach worked much better than the total bounding box approach/heuristic for BVH generation, as the midpoint had to be recalculated numerous times when all the centroids ended up on one side of the bounding box, and this splitting point dealt with overdampening issues, where it would oscillate on either side of the cluster of primitives but not reach them in a reasonable time. Memory performance could also be improved by changing the recursive algorithms to iterative ones.
+    </p>
+
+ <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2cow.png" width="480px" />
+                    <figcaption align="middle">Cow DAE Rendering</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/part2CBbunny.png" width="480px" />
+                    <figcaption align="middle">CBBunny Rendering</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/part2beetle.png" width="480px" />
+                    <figcaption align="middle">Beetle Rendering</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="images/part2CBdragon.png" width="480px" />
+                    <figcaption align="middle">CB Dragon Rendering</figcaption>
+                </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <h2 align="middle">Part 3: Direct Illumination</h2>
+        <p>
+            In this part I implemented two versions of direct lighting, one in which I sampled uniformly on a hemisphere and one in which I only sampled directly from light sources (this function being called "importance"). 
+        </p>
+        <p>
+            Both method are based on the same fundamental idea: we need to integrate over the amount of light hitting an object to calculate the color and amount of light coming from the object. To calculate these integrals, I used Monte Carlo integration, in which I took sample rays, calculated irradiance from them, and took a weighted average (weighted by pdf of sampling function and cosine of the angle of intersection due to Lambert's Law). 
+            For the hemisphere method, I sampled uniformly, while in the importance method I sampled only light sources.
+        </p>
+
+
+
+ <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/task3_hemi_dragon.png" width="480px" />
+                    <figcaption align="middle">Dragon rendering with uniform hemisphere sampling</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/task3_imp_dragon.png" width="480px" />
+                    <figcaption align="middle">Dragon rendering with important sampling</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task3_hemi_lucy.png" width="480px" />
+                    <figcaption align="middle">Lucy rendering with uniform hemisphere sampling</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/task3_imp_lucy.png" width="480px" />
+                    <figcaption align="middle">Lucy rendering with important sampling</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task3_hemi_gems.png" width="480px" />
+                    <figcaption align="middle">Gems rendering with uniform hemisphere sampling</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/task3_imp_gems.png" width="480px" />
+                    <figcaption align="middle">Gems rendering with important sampling</figcaption>
+                </td>
+            </tr>
+            </table>
+        </div>
+
+
+
+ <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/CBbunny_task3_l1s1.png" width="480px" />
+                    <figcaption align="middle">Bunny rendering with 1 light ray</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/CBbunny_task3_l4s1.png" width="480px" />
+                    <figcaption align="middle">Bunny rendering with 4 light rays</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/CBbunny_task3_l16s1.png" width="480px" />
+                    <figcaption align="middle">CBbunny rendering with 16 rays</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="images/CBbunny_task3_l64s1.png" width="480px" />
+                    <figcaption align="middle">CBbunny Rendering with 64 rays</figcaption>
+                </td>
+                </tr>
+            </table>
+        </div>
+
+        <p>
+            While the uniform hemisphere sampling model is more simple, it also has much more noise than the light importance model.
+        </p>
+
+
+        <h2 align="middle">Part 4: Global Illumination</h2>
+
+        <p>
+            In part 3, only direct illumination was addressed. However, light does bounce off objects, and as such, we have indirect illumination to take in account as well. In this part, I take this indirect illumination into account and add it to the previously calculated direct illumination.
+
+        </p>
+
+        <p>
+            To start for indirect illumination, we take in account emissions from objects. Then we need to account for at least one bounce of light. To take in account every bounce of light, we would have to take an infinite dimensional integral, which isn't easy, so instead I used the Monte Carlo method as in part 3. This time around, I used the max depth variable and a probabilistic coin flip to determine when to stop recursion (AKA integration over time) when determining the light bouncing off an object. Summing the light being emitting, directly bouncing off an object, and indirectly bouncing off an object, I was able to sample the global illumination for the renderings.
+        </p>
+
+
+<p>
+    In the only direct light case, all shadows and views not in line with a light source are black. The indirect light case actually has these lit up. Both are also fairly dim compared to the combined rendering.
+    </p>
+ <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s1024_dl.png" width="480px" />
+                    <figcaption align="middle">Spheres Only Direct Lighting</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/task4spheres_s1024_idl.png" width="480px" />
+                    <figcaption align="middle">Spheres Only Indirect Lighting</figcaption>
+                </td>
+            </tr>
+
+                <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s1024.png" width="480px" />
+                    <figcaption align="middle">Spheres Rendering</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/task4dragon.png" width="480px" />
+                    <figcaption align="middle">Dragon Rendering</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/task4coil.png" width="480px" />
+                    <figcaption align="middle">Coil Rendering</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="images/task4lucy.png" width="480px" />
+                    <figcaption align="middle">Lucy Rendering</figcaption>
+                </td>
+                </tr>
+            </table>
+        </div>
+
+         <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/task4bunny_m0_s1024.png" width="480px" />
+                    <figcaption align="middle">Bunny rendering with max depth 0</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4bunny_m1_s1024.png" width="480px" />
+                    <figcaption align="middle">Bunny rendering with max depth 1</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4bunny_m2_s1024.png" width="480px" />
+                    <figcaption align="middle">Bunny rendering with max depth 2</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4bunny_m3_s1024.png" width="480px" />
+                    <figcaption align="middle">Bunny rendering with max depth 3</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4bunny_m100_s1024.png" width="480px" />
+                    <figcaption align="middle">Bunny rendering with max depth 100</figcaption>
+                </td>
+            </tr>
+            </table>
+        </div>
+
+<p>
+    A max depth of 0 would only be light being emitted from objects, so only the above light is visible. A max depth of one is only direct light, so shadows and the ceiling, both not directly being hit by light, are pitch black. For max depths of two and three, we progressively get more light as we take in account more bounces, but as we see with a max depth of 100, this eventually levels off. This comes from our "Russian Roullette" termination probability. I use p = .7, which gives an expected value of 10/7 bounces per ray (< 2).
+</p>
+
+         <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s1.png" width="480px" />
+                    <figcaption align="middle">Spheres with 1 sample/pixel</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s2.png" width="480px" />
+                    <figcaption align="middle">Spheres with 2 samples/pixel</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s4.png" width="480px" />
+                    <figcaption align="middle">Spheres with 4 samples/pixel</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s8.png" width="480px" />
+                    <figcaption align="middle">Spheres with 8 samples/pixel</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s16.png" width="480px" />
+                    <figcaption align="middle">Spheres with 16 samples/pixel</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s64.png" width="480px" />
+                    <figcaption align="middle">Spheres with 64 samples/pixel</figcaption>
+                </td>
+            </tr>
+            <tr>
+                    <td align="middle">
+                    <img src="images/task4spheres_s1024.png" width="480px" />
+                    <figcaption align="middle">Spheres with 1024 samples/pixel</figcaption>
+                </td>
+            </tr>
+            </table>
+        </div>
+
+<p>
+    As we increase the number of samples per pixel, we decrease the noise and converge upon the real image (due to the law of large numbers). However, while taking 1024 samples per pixel looks much better than only taking 1, it does take much more computational time.
+</p>
+
+ <h2 align="middle">Part 5: Adaptive Sampling</h2>
+ <p>
+    Adaptive sampling aims to decrease noise from Monte Carlo sampling through statistics. By using confidence intervals, we are able to check whether or not our average pixel value is within +/- MAX_TOLERANCE of out value with a confidence of 95%. At this point, more samples could contribute more noise and lead to a larger interval for the same tolerance, so we stop sampling after this. This reduces the number of pixels we must sample to get a quality rendering. 
+ </p>
+ <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/task5.png" width="480px" />
+                    <figcaption align="middle">Bunny with Max Samples/Pixel</figcaption>
+                </td>
+                    <td align="middle">
+                    <img src="images/task5_rate.png" width="480px" />
+                    <figcaption align="middle">Rate for Bunny with Max Samples/Pixel </figcaption>
+                </td>
+            </tr>
+</table>
+</div>
+       
+</div>
+
+
+<h2 align="middle">Part 6: Ray Tracing Part 2</h2>
+<p>
+This project was split into two parts in my computer graphics class due to its large size. The second half is <a href="../pathtracer_part2/index.html">here</a>.
+    </p>
+</body>
+</html>
+
+
+
+
