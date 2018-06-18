@@ -1,0 +1,17 @@
+@charset "UTF-8";
+#name {
+	text-align: center;
+	font-size: 42px;
+}
+#linkrow {
+	text-align: center
+}
+
+#linktable {
+	text-align: center
+}
+
+.headerlink {
+	font-size: 24px;
+	font-family: Verdana;
+}
