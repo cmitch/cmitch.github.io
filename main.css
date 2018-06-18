@@ -1,17 +1,49 @@
 @charset "UTF-8";
+
+a:link {
+    color: green; 
+    background-color: transparent; 
+    text-decoration: none;
+}
+
+a:visited {
+    color: pink;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:hover {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+a:active {
+    color: yellow;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+
+
+body {
+	text-align: center;
+}
 #name {
 	text-align: center;
 	font-size: 42px;
 }
-#linkrow {
-	text-align: center
-}
-
-#linktable {
+#linkrow, linktable{
+	position: absolute;
 	text-align: center
 }
 
 .headerlink {
 	font-size: 24px;
 	font-family: Verdana;
+}
+
+#positions {
+	text-align: left;
+	font-size: 20px;
 }
