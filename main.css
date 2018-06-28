@@ -24,7 +24,9 @@ a:active {
     text-decoration: underline;
 }
 
-
+#profilepic {
+	float:right;
+}
 
 body {
 	text-align: center;
