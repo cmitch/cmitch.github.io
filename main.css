@@ -1,60 +1,5 @@
 @charset "UTF-8";
 
-a:link {
-    color: green; 
-    background-color: transparent; 
-    text-decoration: none;
-}
-
-a:visited {
-    color: green;
-    background-color: transparent;
-    text-decoration: none;
-}
-
-a:hover {
-    color: green;
-    background-color: transparent;
-    text-decoration: none;
-}
-
-a:active {
-    color: green;
-    background-color: transparent;
-    text-decoration: none;
-}
-
-#navmenu {
-	list-style-type: none;
-	overflow: hidden;
-	margin: 0;
-	padding: 0;
-	background-color: #333333
-}
-
-.navitem {
-	float:left;
-}
-
-li .navlink {
-	text-decoration: none;
-	display: block;
-	padding: 16px;
-	text-align: center;
-	text-decoration: none;
-	display: block;
-}
-
-li .navlink:hover {
-	background-color: #111111;
-}
-
-body {
-	text-align: center;
-	background-color: #111111;
-	color: white;
-}
-
 #profilepic {
 	float:right;
 	width: 20%;
@@ -70,3 +15,4 @@ body {
 	text-align: left;
 	font-size: 2em;	
 }
+
