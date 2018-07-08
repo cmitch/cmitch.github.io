@@ -57,6 +57,8 @@ body {
 
 #profilepic {
 	float:right;
+	width: 30%;
+	padding: 40px
 }
 
 #name {
@@ -66,5 +68,5 @@ body {
 
 #positions {
 	text-align: left;
-	font-size: 20px;	
+	font-size: 3em;	
 }
