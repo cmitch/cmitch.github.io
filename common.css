@@ -50,9 +50,10 @@ li .navlink:hover {
 }
 
 body {
-	text-align: center;
+	text-align: left;
 	background-color: #111111;
 	color: white;
+	font-family: Cambria;
 }
 
 abbr {
