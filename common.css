@@ -60,3 +60,5 @@ body {
 abbr {
 	text-decoration: None;
 }
+iframe { padding: 50px 50px 50px 50px;
+		}
