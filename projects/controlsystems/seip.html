@@ -23,9 +23,18 @@ Chris Mitchell - SEIP
 </nav>
 	<h1>Self-Erecting Inverted Pendulum</h1>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/RJb3emAefok" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-	<h2>Description</h2>
+	<h2>Description:</h2>
 	<p>
-		
+		For the setup of this project, we only had access to a motorized cart with a 6V saturation voltage on a finite track, along with encoders to gain cart position and pendulum angle. Our goal was to use this cart in order to not only balance the pendulum in an inverted position, but also have the pendulum erect itself using only the cart motion.
+	</p>
+	<p>
+		The first priority was to create the state space equations, for which we used linear approximations of sine and cosine in order to achieve a linear system. At first we used standard pole placement in order to ensure stability, but we later switched to using an LQR controller instead, weighing the variation of the angle, cart position, and voltage from 0.
+	</p>
+	<p>
+		Initially, we used numerical approximations in order to model our linear and angular velocity in our state space, but this method proved incredibly noisey. Instead, we used a Luenberger observer in order to estimate these quantities much more effectively.
+	</p>
+	<p>
+		Finally, we needed to design a way to erect the pendulum. We did this through use of a combination of our prior controller and a Bang-Bang controller, one in which either the maximum or minimum voltage is applied depending on the angle of the cart. By looking at the approximate energy of the system (with a potential energy reference point of zero when inverted) and at the angle, we were able to determine which controller should be used when.
 	</p>
 	<h2> For more detailed descriptions of this project:</h2>
 	<ul>
