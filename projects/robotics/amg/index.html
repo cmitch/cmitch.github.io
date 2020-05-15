@@ -20,11 +20,11 @@
 </script>
 
 
-<title>EECS 106b AMG Project</title>
+<title>EECS 106B AMG Project</title>
 </head>
 
 <body>
-<h1>EECS 106b: Acoustic Myography (AMG) as a Viable Force Signal</h1>
+<h1>EECS 106B: Acoustic Myography (AMG) for Robotic Force Control</h1>
 <h6>Chris Mitchell, Eric Hu, Fayyaz Ahamed</h6>
 
 <h2>Project Overview</h2>
@@ -39,11 +39,11 @@
 			</td>
 		</tr>
 	</table>
-	<figcaption>Applications of Robotics in the Biomedical Field</figcaption>
+	<figcaption>Applications of robotic force control in the biomedical field</figcaption>
 </figure>
 
 <p>
-Robotics has been slowly becoming a stable in the medical field. While electrical engineering has been present for decades with techniques such as MRI, EMG, and ultrasounds, with advancements in artificial intelligence, control theory, and grasping, more complex interactions have been made possible, allowing for assitive surgery and advanced prosthetics and exoskeletons, for example. Force is a central component to the control of these systems, as one does not wish to hurt someone or damage objects, but there exists a required amount of force to engage in these tasks. While a human can intuitively apply and adjust their exerted force amount, this problem is much more difficult for a robot to solve, and many trials would be required for a machine learning approach.
+Robotics has been slowly becoming a staple in the medical field. While sensing technologies such as MRI, EMG, and ultrasounds have been around for decades, with recent advancements in artificial intelligence, control theory, and grasp theory, more complex human-machine interactions have been made possible, allowing for the development of assistive surgery, advanced prosthetics, and exoskeletons. Force is a central component to the control of these systems, since while a system should avoid harming the user or damaging objects, there exists a baseline amount of force required to engage in these tasks. While a human can intuitively apply and adjust their exerted forces, this problem is much more difficult for a robot to solve: even a machine learning approach would require a multitude of trials to provide adequate training data.
 	</p>
 <h3>What is AMG?</h3>
 <table>
@@ -57,20 +57,20 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 <td>
 <figure>
 	<img src="images/muscle_fibers.png" alt="Diagram of muscle fibers" />
-	<figcaption>AMG intends to listen to the acoustic vibrations of muscle fibers</figcaption>
+	<figcaption>AMG listens to the acoustic vibrations of muscle fibers</figcaption>
 </figure>
 </td>
 </tr>
 </table>
 
 <p>
-	AMG is essentially a glorified microphone, functioning like a muscle stethoscope. Just as an EMG reads in the electomagnetic waves, an AMG reads in the mechanical/acoustic waves produced by one's arm, namely by contractions. Unlike MRI's, this could work as an onboard sensor for assistive devices with minimal hinderance. Note that due to availabity of sensors, we used equine AMG sensors throughout this project.
+	AMG is essentially a glorified microphone, functioning like a muscle stethoscope. Just as an EMG senses differences in voltage, an AMG senses the mechanical/acoustic waves produced by one's arm during muscle contraction. Like sEMG, this technique has proven to be reliable, low-cost, and noninvasive, allowing it to work as an onboard sensor for assistive devices with minimal hinderance. Note that for the purposes of our experiments, we used AMG sensors designed for equine subjects throughout this project.
 	</p>
 
 <h3>Goal of Project</h3>
 
 <p>
-	Prior work has suggested a mathematical relationship between the features of the AMG signal and the force the muscle is exerting. Our aim is to use this signal as a control input into a robot. From this foundation, the user could control the force a robot uses for tasks such as grasping both rigid and soft objects, compensatory force application, or indirectly controllability. For verification, we further simulated robotic grasping, using the AMG force signal as the desired contact forces.
+	Prior work has suggested a mathematical relationship between the features of the AMG signal and the force the muscle is exerting. Our aim is to use this signal as a feedforward control input into a robot. From this foundation, the user could control the force a robot uses for tasks such as grasping both rigid and soft objects, compensatory force application, or indirect control. Due to the university shutdown and lack of access to hardware, we sought to implement this force control with a simulated robotic grasp, using the AMG force signal as the desired contact force.
 
 <figure>
 	<img src="images/flow_chart.png" alt="Control Flow Chart" />
@@ -85,11 +85,11 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 
 <h3>Data Collection Method</h3>
 <h4>Sensor Setup</h4>
-<p>The AMG sensors we obtained came with the MyoDynamik CURO box, a device that allows for the sampling and recording from multiple AMG sensors. These signals are then converted into a wav file post-recording.
+<p>The AMG sensors we obtained came with the MyoDynamik CURO box, a device that allows for multi-channel AMG sampling and recording. These signals are then converted into a WAV file for post-processing.
 
 <figure>
 	<img src="images/curobox_setup.png" alt="CURO Setup" />
-	<figcaption>Original Setup Using CURO Box</figcaption>
+	<figcaption>Original setup using CURO box</figcaption>
 </figure>
 
 <p>
@@ -101,20 +101,20 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 		<td>
 			<figure>
 			<img src="images/circuitry.png" alt="Arduino Sensor Circuitry" />
-			<figcaption>Post-Processing Circuitry</figcaption>
+			<figcaption>Post-processing circuitry</figcaption>
 		</figure>
 		</td>
 		<td>
 			<figure>
 				<img src="images/arduino_sensor_setup.png" alt="Arduino Sensor Setup" />
-				<figcaption>Arduino Sensor Setup</figcaption>
+				<figcaption>Arduino sensor setup</figcaption>
 			</figure>
 		</td>
 	</tr>
 </table>
-<h4>Realtime versus Priorly Collected</h4>
+<h4>Real-Time versus Pre-Processing</h4>
 
-<p>While our experiments with the real time data collection show promise, the data clearly appears cleaner with the CURO, as seen below. Note that the amplitude is irrelevant for this case as the real time did have a gain before being sampled. We suspect that the CURO does some processing that we did not do. The CURO also samples at the high rate of 1000 Hz, which would require setting changes for an Arduino to effectively replicate. For these reasons, we settled on using the CURO for our preliminary analysis.
+<p>While our experiments with the real time data collection show promise, the data clearly appears cleaner with the CURO, as seen below. Note that the amplitude is irrelevant for this case due to differences in gain between both implementations; additionally, we suspect that the CURO performs some processing we could not replicate. The CURO also samples at the high rate of 2 kHz, which would require setting changes for an Arduino to effectively replicate. For these reasons, we settled on using the CURO for our preliminary analysis.
 
 <figure>
 <table>
@@ -128,11 +128,11 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 	</tr>
 </table>
 
-<figcaption>Real-Time versus CURO-Processed Data</figcaption>
+<figcaption>Real-time versus CURO-processed data</figcaption>
 </figure>
 
-<h4>Isometric Collection</h4>
-<p>For experimental design, we decided on using isometric contractions, or contractions where the arm is relatively stationary. While non-isometric results, such as with lifting a weight, could be highly informative, the onset and end of such actions creates impulses that would need to be taken into account. For this reason, we stayed with isometric experimentation by having a user apply a subjective amount of force against a table without removing their hand, measuring the mechanical output of the bicep.
+<h4>Choosing Isometric Contractions</h4>
+<p>For experimental design, we decided on using isometric contractions, or contractions where the arm is relatively stationary. While non-isometric results, such as with lifting a weight, could be highly informative, the onset and end of such actions creates impulses that would need to be taken into account. For this reason, we stayed with isometric experimentation by having a user apply a subjective amount of force against a table without removing their hand, and measuring the mechanical output of the bicep.
 <figure>
 <table>
 	<tr>
@@ -144,7 +144,7 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 		</td>
 	</tr>
 </table>
-<figcaption>Isometric versus Non-Isometric Setup</figcaption>
+<figcaption>Isometric versus non-isometric setup</figcaption>
 </figure>
 
 <figure>
@@ -159,10 +159,10 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 	</tr>
 </table>
 
-<figcaption>Isometric versus Non-Isometric Data</figcaption>
+<figcaption>Isometric versus non-isometric data</figcaption>
 </figure>
 
-<h4>Entire Data Collection Procedure</h4>
+<h4>Data Collection Protocol</h4>
 <figure>
 
 	<table>
@@ -182,14 +182,14 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 			</td>
 		</tr>
 	</table>
-	<figcaption>Characterization of Obtained Data, Showing the Results of Participants Applying Various Amounts of Subjective Force</figcaption>
+	<figcaption>Characterization of obtained data, with participants exerting various amounts of subjective force</figcaption>
 </figure>
 
 <p>In summary, we performed all of our recordings using the commercially available MyoDynamik CURO (Figure 1), with the large equine AMG sensors depicted. For our recordings, we affixed a sensor to the center of the biceps, with ultrasound gel for noise insulation. Each subject was instructed to sit straight up with their elbow at a 90-degree angle, palms facing up. During the trial, subjects were told to perform isometric (motionless) contractions by pushing up against the bottom of a weighted table, using a subjective fraction of their total strength in increments of 20% for roughly 2-4 seconds, with 2-4 second rest periods in between contractions (Figure 2). We gathered a total of 25 trials from 8 subjects. All trials for any particular subject were taken back-to-back with a 1-minute rest period, without removing or replacing the sensor.</p>
 
 
 <h3>Post-Signal Processing</h3>
-<p>To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in (1), where $Fout$ is the muscle output force, $n$ is the number of recruited fibers, $Favg$ is the average fiber output force, $A$ is the amplitude, $nu$ is the frequency, and $\alpha$ is a constant.</p>
+<p>To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in the following equation, where $F_{out}$ is the muscle output force, $n$ is the number of recruited fibers, $F_{avg}$ is the average fiber output force, $A$ is the amplitude, $nu$ is the frequency, and $\alpha$ is a constant.</p>
 
 
 <img src="images/equation.png" alt="Force is in theory proportional to amplitude and frequency" id="equation" />
@@ -199,7 +199,7 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 
 <figure>
 <img src="images/env_detection.png" alt="Graph showing envelope detection example" />
-<figcaption>Envelope Detection Applied to Sample Data</figcaption>
+<figcaption>Envelope detection applied to sample data</figcaption>
 </figure>
 
 
@@ -207,7 +207,7 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 
 <figure>
 	<img src="images/mean_freq.png" alt="Mean Frequency Calculation" />
-	<figcaption>Mean Frequency Calculated within Specified Bounds</figcaption>
+	<figcaption>Mean frequency calculated within specified bounds</figcaption>
 </figure>
 
 <h3>Signal Processing Analysis</h3>
@@ -223,7 +223,7 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 </td>
 </tr>
 </table>
-<figcaption>Graphs of Change in Ampltiude in Response to Changes of Force</figcaption>
+<figcaption>Graphs of change in ampltiude in response to changes of force</figcaption>
 </figure>
 
 
@@ -238,7 +238,7 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 </td>
 </tr>
 </table>
-<figcaption>Graphs of Change in Frequency in Response to Changes of Force</figcaption>
+<figcaption>Graphs of change in frequency in response to changes of force</figcaption>
 </figure>
 
 <figure>
@@ -252,14 +252,14 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 </td>
 </tr>
 </table>
-<figcaption>Graphs of Change in Frequency-Amplitude Product in Response to Changes of Force</figcaption>
+<figcaption>Graphs of change in frequency-amplitude product in response to changes of force</figcaption>
 </figure>
 
 
 
 
 
-<h3>Simulation Experimental Setup</h3>
+<h3>Simulation Setup</h3>
 <p>To determine if we could utilize a force input signal, <em>u(t)</em>, to control the contact forces on an object grasped by a robot's grippers, we utilized PyBullet as a simulation environment. We used a 7 degree-of-freedom KUKA robot situated on a table as the robot performing our grasp task in simulation. We also designed a custom gripper to be the end-effector for the KUKA robot, which simply consisted of a rectangular prism base with two gripper rods attached as shown in Figure 4. The gripper has two prismatic joints, allowing each one of the gripper rods to slide along the base freely until colliding with the other gripper rod.</p>
 
 <figure>
@@ -309,7 +309,24 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 </figure>
 <p>Three example graphs depicting results of the proportional feedback position control experiment are shown in Figure 7. In these experiments, we made the desired input force trajectories sine, sawtooth, or square waves at 1 Hz with amplitudes $A$ ranging from 1 to 32 Newtons centered at 2$A$. We found that the average contact force generally tracks the desired contact force relatively well across each trajectory. The amplitudes and DC value are exactly as expected across the different amplitudes, ranging from the low force case of 1 N all the way to the maximum of about 100 N in the 32 N case. However, there is a bit of a discrepancy in the exact frequency of the output wave. Most of the waves appear to have a period of about 1.1-1.2 seconds, which means that the frequency of the experienced average contact force trajectory varies between 0.83 and 0.91 Hz, instead of the expected 1 Hz wave. However, since all simulations regardless of input force trajectory have this shift in expected frequency from 1 Hz to slightly less than 1 Hz, this suggests that this may be a discrepancy caused by simulation in PyBullet, or by intermediate calculations in the simulation causing a systemic slow-down effect.</p>
 <p>Of special note are the square wave experiments because the sudden discontinuities in the square wave trajectory would largely mimic a human user's force trajectory when grasping an object remotely: they would start at a very low force, and quickly reach the force necessary to grasp the object and remain at that steady-state force value. We found that the measured force trajectory strongly matched the desired force input $u(t)$ with minor overshoot before settling to the correct steady-state value. In addition, the aforementioned minor changes in frequency and some transient stutters in the output force in the 32 N experiment were present. Overall, the simulation results suggest that the proportional feedback position control works very effectively both at maintaining steady-state forces and quickly adapting to sudden changes in desired force. In addition to the sine and square wave trajectories, we tested out sawtooth waves at the same amplitudes, in which we saw similar overshoot and settling as seen in the square waves.
+
 <h2>Conclusion</h2>
+
+<p>Based on our force response characterization, we conclude that there is a roughly parabolic relationship between AMG rms signal amplitude and user-reported muscle force, and no relationship with frequency. The fact that we see no difference in frequency could be due to an error in attaching the sensors during recording, or a lack of robust filtering during the data processing stage; as mentioned previously, the presence of small spikes or impulses can quickly skew the entire signal spectrum toward much higher frequencies, and shift the average.
+	</p>
+<p>Originally, we planned to correlate AMG signal parameters with the actual magnitude of force exerted by the user. However, due to the difficulty of measuring muscle tension and output force in real-time, we ended up correlating the signal parameters to subjective effort levels instead. While this approach prevents us from ascertaining any fixed relationship between AMG signal and output force, it has one major benefit: it allows us to gauge AMG characteristics with respect to the user's expected output force, instead of their actual output force, meaning that the approach naturally accounts for errors between these forces. This means that a user operating our system could control a decoded force output that feels linear, even if the physical forces involved are actually quadratic.
+	</p>
+
+<p>In seeking to actuate a force input signal $u(t)$, we designed a robust proportional feedback position controller in simulation. We found that across a variety of signal amplitudes and trajectories, the contact forces closely matched the desired input force trajectory, with the only minor drawback being a slight decrease in frequency. Unfortunately, there are several aspects of our simulation that may prevent our results from working identically on physical platforms. Our proportional feedback utilized the difference between the desired force and the current average contact force to conduct error correction. In simulation, we have perfect knowledge of those contact forces; however, in reality, we would require some sort of sensor attached to either the wooden block or the grippers to provide a real-time estimate of the contact force. Alternatively, we could calculate the grasping contact forces based on torques applied at the joints. Nevertheless, there will always some uncertainty in the real-time force value returned to the controller by either of these methods, which will make our controller less reliable in reality.
+	</p>
+
+<h2>Future Work</h2>
+
+<p>Our goal for this project is to be able to directly control the strength of a grasp force in real time using inputs decoded from AMG sensor recordings, both in simulation as well as on a physical robot platform. To this end, our intended next steps are to configure the AMG sensors in such a way that they can capture data in real time. In practice, this would require not only adjustments to the filtering and data processing pipelines, but also an $n$-point calibration of the AMG signal response before the start of every real-time recording, to which a quadratic curve can be fitted using least-squares. From there, real-time amplitude measurements can simply be plugged into the curve to determine the user's force intent.
+	</p>
+
+<p>If current circumstances persist and we are unable to access a physical robot, there are several improvements we could make to the simulator. The first improvement would be to test out objects of different mass and volume, examine what changes in force control might be necessary to resist varied gravitational forces. The next major step would be to sample human user AMG data after user calibration to feed into the simulator as the desired force input $u(t)$. If the robot is able to track the human user's intent without much modification to our current design, we would finally attempt to collect an AMG datastream, and use it to control the simulation robot in real-time.
+	</p>
 
 <h2>Team Bios</h2>
 
@@ -318,13 +335,13 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 	</p>
 
 <h3 class="profileheader">Eric Hu</h3>
-<p>
+<p>Eric is a senior majoring in Bioengineering with a minor in EECS, who has taken courses on robotics (EECS C106A), digital signal processing (EE 120/123), and human-oriented design (BioE C137). He has experience with EMG systems, and is interested in designing neuroprosthetics and brain-machine interfaces.
 
 	</p>
 
 <h3 class="profileheader">Fayyaz Ahamed</h3>
 
-<p>Fayyaz is a senior majoring in bioengineering who has taken EECS C106A, the BioE equivalents of 16A/B, EE120, and has research experience in biomedical imaging. He has experience working with EEG and is interested in robotic surgery and improving human-robot interaction.</p>
+<p>Fayyaz is a senior majoring in Bioengineering who has taken EECS C106A, the BioE equivalents of 16A/B, EE120, and has research experience in biomedical imaging. He has experience working with EEG and is interested in robotic surgery and improving human-robot interaction.</p>
 
 
 </body>
