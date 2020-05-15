@@ -1,6 +1,11 @@
 @charset "UTF-8";
 
 
+body {  
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
 
 h1, h2, h3, h4, h5, h6 {
 	text-align: center;
@@ -9,14 +14,8 @@ h1, h2, h3, h4, h5, h6 {
 p {
   margin-top: 20px;
   margin-bottom: 100px;
-  margin-right: 20px;
-  margin-left: 20px;
 }
 
-
-figure {
-  margin-bottom: 100px;
-}
 
 #equation {
   display: block;
@@ -27,32 +26,30 @@ figure {
 
 
 
-.isodata, .isosetup, .realtimedata{
+img {
   height: 100%;
   width: 100%;
 }
 
-.fchar {
-  width: 100%
-}
 
-fig img {
-
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-}
 
 figure figcaption {
 
-  text-align: center
+  text-align: center;
+  margin-bottom: 100px
 }
 
 figure {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  height: 100%;
+  width: 100%;
+}
+
+.profileheader {
+	text-align: left;
+
 }
 
 
