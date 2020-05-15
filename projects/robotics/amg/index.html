@@ -11,6 +11,15 @@
 
 <link href="amg.css" rel="stylesheet" type="text/css" />
 
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
 <title>EECS 106b AMG Project</title>
 </head>
 
@@ -23,7 +32,7 @@
 	<table>
 		<tr>
 			<td>
-				<img src="images/holding_egg.png" alt="Example of robot holding delicate object" />
+				<img src="images/holding_egg.png" alt="Example of prosthetic holding delicate object" />
 			</td>
 			<td>
 				<img src="images/surgery.png" alt="Example of robots assiting in surgery" />
@@ -32,16 +41,36 @@
 	</table>
 	<figcaption>Applications of Robotics in the Biomedical Field</figcaption>
 </figure>
+
+<p>
+Robotics has been slowly becoming a stable in the medical field. While electrical engineering has been present for decades with techniques such as MRI, EMG, and ultrasounds, with advancements in artificial intelligence, control theory, and grasping, more complex interactions have been made possible, allowing for assitive surgery and advanced prosthetics and exoskeletons, for example. Force is a central component to the control of these systems, as one does not wish to hurt someone or damage objects, but there exists a required amount of force to engage in these tasks. While a human can intuitively apply and adjust their exerted force amount, this problem is much more difficult for a robot to solve, and many trials would be required for a machine learning approach.
+	</p>
 <h3>What is AMG?</h3>
+<table>
+	<tr>
+		<td>
 <figure>
 	<img src="images/horse_curo.png" alt="Use of AMG on a horse" />
 	<figcaption>AMG in Use</figcaption>
 </figure>
+</td>
+<td>
 <figure>
 	<img src="images/muscle_fibers.png" alt="Diagram of muscle fibers" />
 	<figcaption>AMG intends to listen to the acoustic vibrations of muscle fibers</figcaption>
+</figure>
+</td>
+</tr>
+</table>
+
+<p>
+	AMG is essentially a glorified microphone, functioning like a muscle stethoscope. Just as an EMG reads in the electomagnetic waves, an AMG reads in the mechanical/acoustic waves produced by one's arm, namely by contractions. Unlike MRI's, this could work as an onboard sensor for assistive devices with minimal hinderance. Note that due to availabity of sensors, we used equine AMG sensors throughout this project.
+	</p>
 
 <h3>Goal of Project</h3>
+
+<p>
+	Prior work has suggested a mathematical relationship between the features of the AMG signal and the force the muscle is exerting. Our aim is to use this signal as a control input into a robot. From this foundation, the user could control the force a robot uses for tasks such as grasping both rigid and soft objects, compensatory force application, or indirectly controllability. For verification, we further simulated robotic grasping, using the AMG force signal as the desired contact forces.
 
 <figure>
 	<img src="images/flow_chart.png" alt="Control Flow Chart" />
@@ -56,10 +85,16 @@
 
 <h3>Data Collection Method</h3>
 <h4>Sensor Setup</h4>
+<p>The AMG sensors we obtained came with the MyoDynamik CURO box, a device that allows for the sampling and recording from multiple AMG sensors. These signals are then converted into a wav file post-recording.
 
 <figure>
 	<img src="images/curobox_setup.png" alt="CURO Setup" />
 	<figcaption>Original Setup Using CURO Box</figcaption>
+</figure>
+
+<p>
+	While the CURO provides ease in functionality, it lacks any real-time support that we would desire for an applied system. For this reason, we also explored rerouting the signal directly from the sensor into an Arduino. After the sensor's built in amplifier, we further amplified, low pass filtered, and buffered the signal before sampling.
+	</p>
 
 <table>
 	<tr>
@@ -79,6 +114,8 @@
 </table>
 <h4>Realtime versus Priorly Collected</h4>
 
+<p>While our experiments with the real time data collection show promise, the data clearly appears cleaner with the CURO, as seen below. Note that the amplitude is irrelevant for this case as the real time did have a gain before being sampled. We suspect that the CURO does some processing that we did not do. The CURO also samples at the high rate of 1000 Hz, which would require setting changes for an Arduino to effectively replicate. For these reasons, we settled on using the CURO for our preliminary analysis.
+
 <figure>
 <table>
 	<tr>
@@ -95,7 +132,7 @@
 </figure>
 
 <h4>Isometric Collection</h4>
-
+<p>For experimental design, we decided on using isometric contractions, or contractions where the arm is relatively stationary. While non-isometric results, such as with lifting a weight, could be highly informative, the onset and end of such actions creates impulses that would need to be taken into account. For this reason, we stayed with isometric experimentation by having a user apply a subjective amount of force against a table without removing their hand, measuring the mechanical output of the bicep.
 <figure>
 <table>
 	<tr>
@@ -123,8 +160,9 @@
 </table>
 
 <figcaption>Isometric versus Non-Isometric Data</figcaption>
-<figure>
+</figure>
 
+<h4>Entire Data Collection Procedure</h4>
 <figure>
 
 	<table>
@@ -144,12 +182,14 @@
 			</td>
 		</tr>
 	</table>
-	<figcaption>Characterization of Obtained Data</figcaption>
+	<figcaption>Characterization of Obtained Data, Showing the Results of Participants Applying Various Amounts of Subjective Force</figcaption>
 </figure>
+
+<p>In summary, we performed all of our recordings using the commercially available MyoDynamik CURO (Figure 1), with the large equine AMG sensors depicted. For our recordings, we affixed a sensor to the center of the biceps, with ultrasound gel for noise insulation. Each subject was instructed to sit straight up with their elbow at a 90-degree angle, palms facing up. During the trial, subjects were told to perform isometric (motionless) contractions by pushing up against the bottom of a weighted table, using a subjective fraction of their total strength in increments of 20% for roughly 2-4 seconds, with 2-4 second rest periods in between contractions (Figure 2). We gathered a total of 25 trials from 8 subjects. All trials for any particular subject were taken back-to-back with a 1-minute rest period, without removing or replacing the sensor.</p>
 
 
 <h3>Post-Signal Processing</h3>
-<p>To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in (1), where <em>Fout</em> is the muscle output force, <em>n</em> is the number of recruited fibers, <em>Favg</em> is the average fiber output force, <em>A</em> is the amplitude, <em>nu</em> is the frequency, and <em>alpha</em> is a constant.</p>
+<p>To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in (1), where $Fout$ is the muscle output force, $n$ is the number of recruited fibers, $Favg$ is the average fiber output force, $A$ is the amplitude, $nu$ is the frequency, and $\alpha$ is a constant.</p>
 
 
 <img src="images/equation.png" alt="Force is in theory proportional to amplitude and frequency" id="equation" />
@@ -234,16 +274,25 @@
 <h2>Results</h2>
 <h3>Force Decoding</h3>
 <p>The results of our 25 trials are depicted in Figure 5, with both individual and grouped data. We observed a significant nonlinear relationship between reported contraction strength and both signal amplitude and amplitude-frequency product ($p < 0.0001$), although the fact that we observed no similar relationship with frequency ($p = 0.2918$) suggests that the amplitude relationship is the only valid one. In addition to differences between signal features and contraction effort, two-way ANOVA on the individually-matched datasets also showed significant differences in signal features between users ($p \leq 0.0004$), as well as a significant effect of subject-effort interaction on signal features ($p < 0.0001$), for all three feature types. These results suggest that a high level of variation in system behavior between different users was present, which was no surprise, given the individual variations expected in user strength, anatomy, and sensor attachment location.</p>
-<p>Force Control in Simulation</p>
-<p><video controls="controls" width="1920" height="1080">
+
+<h3>Force Control in Simulation</h3>
+
+<figure>
+<video controls="controls" width="1920" height="1080">
 	<source src="videos/Feedforward.mp4" type="video/mp4" />
-	<p>Demonstration of robot grasping a cube using feedforward control at 10.5 mm intrusion depth.</p>
-</video></p>
-<p><video controls="controls" width="1920" height="1080">
+</video>
+<figcaption>Demonstration of robot grasping a cube using feedforward control at 10.5 mm intrusion depth.</figcaption>
+</figure>
+<figure>
+<video controls="controls" width="1920" height="1080">
 	<source src="videos/Force%20Videos%20Feedforward%20position.mp4" type="video/mp4" />
-	<p>Demonstration of robot grasping a jenga block at 10.5, 13, and 10 mm intrusion depth.</p>
-</video></p>
-<p><img src="images/force%20vs%20gripper%20position.png" alt="description" width="648" height="546" /></p>
+</video>
+<figcaption>Demonstration of robot grasping a jenga block using feedforward control at 10.5, 13, and 10 mm intrusion depth.</figcaption>
+</figure>
+<figure>
+<img src="images/force%20vs%20gripper%20position.png" alt="description" width="648" height="546" />
+<figcaption>Average contact force vs. gripper feedforward position control characterization.</figcaption>
+</figure>
 <p>The results from the feedforward position control experiment are shown in Figure 6. As the gripper intrusion depth increased from 10 mm, where it lost contact with the Jenga block, to 15 mm, where the block was crushed so hard that it flew out of the grippers, we saw a roughly linear increase in average contact force. Of note is that at very high contact forces, the variation in contact forces is extremely high. This is likely because some trials at these gripper intrusion depths involved the block getting squeezed out of the grippers' grasp. Other trials in this range likely had the block move ever so slightly, resulting in what would be small variations in contact forces at low gripper intrusion depths, but since the intrusion depth was so high for these trials, these slight changes in position caused huge fluctuations in the average contact forces on the block. Despite the large variations at higher forces, this set of experiments demonstrated that within a specific regime, we could directly and linearly control the contact forces experienced by a block by varying the gripper position, and that this control might be more accurate at lower contact forces.</p>
 
 <figure>
@@ -251,7 +300,7 @@
 	<source src="videos/Sawtooth.mp4" type="video/mp4" />
 	<p>Demonstration of robot grasping a jenga block with a sawtooth input force trajectory at 32 N amplitude. Minor deviations in the green gripper rod's position can be noted.</p>
 </video>
-
+	<figcaption></figcaption>
 </figure>
 
 <figure>
@@ -265,7 +314,7 @@
 <h2>Team Bios</h2>
 
 <h3 class="profileheader">Chris Mitchell</h3>
-<p>
+<p>Chris is an Electrical Engineeering and Computer Science (EECS) major doubling in Linguistics at UC Berkeley, class of 2020. His primary research interests involve applying the combination of robotics and interdisciplinary techniques in order to progress the biomedical field and improve assistive technology.
 	</p>
 
 <h3 class="profileheader">Eric Hu</h3>
