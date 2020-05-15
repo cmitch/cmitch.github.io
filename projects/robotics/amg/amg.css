@@ -6,8 +6,54 @@ h1, h2, h3, h4, h5, h6 {
 	text-align: center;
 }
 
+p {
+  margin-top: 20px;
+  margin-bottom: 100px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+
+figure {
+  margin-bottom: 100px;
+}
 
 #equation {
-	text-align: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
+
+
+
+.isodata, .isosetup, .realtimedata{
+  height: 100%;
+  width: 100%;
+}
+
+.fchar {
+  width: 100%
+}
+
+fig img {
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+figure figcaption {
+
+  text-align: center
+}
+
+figure {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
 
