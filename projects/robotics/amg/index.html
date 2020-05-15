@@ -22,18 +22,24 @@
 <h1>EECS 106b: Acoustic Myography (AMG) as a Viable Force Signal</h1>
 <h4>Chris Mitchell, Eric Hu, Fayyaz Ahamed</h4>
 
-<h2>Motivation</h2>
+<h2>Project Overview</h2>
 
-<h2>Experimental Setup</h2>
-<h1>Acoustic Myography Signal Collection</h1>
-<p>We performed all of our recordings using the commercially available MyoDynamik CURO (Figure 1), with the large equine AMG sensors depicted. For our recordings, we affixed a sensor to the center of the biceps, with ultrasound gel for noise insulation. Each subject was instructed to sit straight up with their elbow at a 90-degree angle, palms facing up. During the trial, subjects were told to perform isometric (motionless) contractions by pushing up against the bottom of a weighted table, using a subjective fraction of their total strength in increments of 20\% for roughly 2-4 seconds, with 2-4 second rest periods in between contractions (Figure 2). We gathered a total of 25 trials from 8 subjects. All trials for any particular subject were taken back-to-back with a 1-minute rest period, without removing or replacing the sensor.</p>
-<h2>Signal Analysis</h2>
+<h2>Implementation</h2>
+<h3>AMG Experimental Setup</h3>
+<p>We performed all of our recordings using the commercially available MyoDynamik CURO (Figure 1), with the large equine AMG sensors depicted. For our recordings, we affixed a sensor to the center of the biceps, with ultrasound gel for noise insulation. Each subject was instructed to sit straight up with their elbow at a 90-degree angle, palms facing up. During the trial, subjects were told to perform isometric (motionless) contractions by pushing up against the bottom of a weighted table, using a subjective fraction of their total strength in increments of 20% for roughly 2-4 seconds, with 2-4 second rest periods in between contractions (Figure 2). We gathered a total of 25 trials from 8 subjects. All trials for any particular subject were taken back-to-back with a 1-minute rest period, without removing or replacing the sensor.</p>
+<h3>Signal Analysis</h3>
+<p>To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in (1), where <em>Fout</em> is the muscle output force, <em>n</em> is the number of recruited fibers, <em>Favg</em> is the average fiber output force, <em>A</em> is the amplitude, <em>nu</em> is the frequency, and <em>alpha</em> is a constant.</p>
+<p>INSERT EQUATION HERE </p>
+<p>For each of our 25 trials, we detrended the raw signal, removed outliers, and delineated the start and end of each contraction period manually. For the amplitude parameter, we took the difference between the upper and lower root-mean-square envelopes of the signal using a 1000-sample (0.5 s) window (Figure 3A), and calculated the mean amplitude for each contraction period. Due to individual variations in signal strength, we scaled each signal such that the mean amplitude at baseline (0% contraction) was set at 1.</p>
+<p>To determine the frequency parameter, we took each individual contraction period, and multiplied it with a Hann window of the same length, to reduce spectral leakage around active frequencies. We then used MATLAB's meanfreq function to calculate the mean frequency of each contraction period between 2 and 500 Hz (Figure 3B), which encapsulates the full working frequencies of active muscle [1]. Because rapid spikes/outliers are strongly delocalized in the frequency domain, much care needed to be taken to remove them manually.</p>
+<h3>Simulation Experimental Setup</h3>
+<p>To determine if we could utilize a force input signal, <em>u(t)</em>, to control the contact forces on an object grasped by a robot's grippers, we utilized PyBullet as a simulation environment. We used a 7 degree-of-freedom KUKA robot situated on a table as the robot performing our grasp task in simulation. We also designed a custom gripper to be the end-effector for the KUKA robot, which simply consisted of a rectangular prism base with two gripper rods attached as shown in Figure 4. The gripper has two prismatic joints, allowing each one of the gripper rods to slide along the base freely until colliding with the other gripper rod.</p>
 
 <h2>Results</h2>
 
-<h2>Simulation Verification</h2>
+<h2>Conclusion</h2>
 
-
+<h2>Team Bios</h2>
 
 
 </body>
