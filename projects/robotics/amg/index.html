@@ -165,26 +165,10 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 
 <h4>Data Collection Protocol</h4>
 <figure>
-
-	<table>
-		<tr>
-			<td>
-				<img src="images/fchar1.png" alt="Frequency Characterization 1" class="fchar" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<img src="images/fchar2.png" alt="Frequency Characterization 2" class="fchar" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<img src="images/fchar3.png" alt="Frequency Characterization 3" class="fchar" />
-			</td>
-		</tr>
-	</table>
-	<figcaption>Characterization of obtained data, with participants exerting various amounts of subjective force</figcaption>
+	<img src="images/example_trials.PNG" alt="Example Trials" />
+	<figcaption>Examples of obtained data, with participants exerting various amounts of subjective force</figcaption>
 </figure>
+
 
 <p>In summary, we performed all of our recordings using the commercially available MyoDynamik CURO (Figure 1), with the large equine AMG sensors depicted. For our recordings, we affixed a sensor to the center of the biceps, with ultrasound gel for noise insulation. Each subject was instructed to sit straight up with their elbow at a 90-degree angle, palms facing up. During the trial, subjects were told to perform isometric (motionless) contractions by pushing up against the bottom of a weighted table, using a subjective fraction of their total strength in increments of 20% for roughly 2-4 seconds, with 2-4 second rest periods in between contractions (Figure 2). We gathered a total of 25 trials from 8 subjects. All trials for any particular subject were taken back-to-back with a 1-minute rest period, without removing or replacing the sensor.</p>
 
@@ -203,8 +187,8 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <p>For each of our 25 trials, we detrended the raw signal, removed outliers, and delineated the start and end of each contraction period manually. For the amplitude parameter, we took the difference between the upper and lower root-mean-square envelopes of the signal using a 1000-sample (0.5 s) window (Figure 3A), and calculated the mean amplitude for each contraction period. Due to individual variations in signal strength, we scaled each signal such that the mean amplitude at baseline (0% contraction) was set at 1.</p>
 
 <figure>
-<img src="images/env_detection.png" alt="Graph showing envelope detection example" />
-<figcaption>Envelope detection applied to sample data</figcaption>
+	<img src="images/env_detection.png" alt="Graph showing envelope detection example" />
+	<figcaption>Envelope detection applied to sample data</figcaption>
 </figure>
 
 
@@ -265,7 +249,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 
 
 <h3>Simulation Setup</h3>
-<p>To determine if we could utilize a force input signal, <em>u(t)</em>, to control the contact forces on an object grasped by a robot's grippers, we utilized PyBullet as a simulation environment. We used a 7 degree-of-freedom KUKA robot situated on a table as the robot performing our grasp task in simulation. We also designed a custom gripper to be the end-effector for the KUKA robot, which simply consisted of a rectangular prism base with two gripper rods attached as shown in Figure 4. The gripper has two prismatic joints, allowing each one of the gripper rods to slide along the base freely until colliding with the other gripper rod. We carried out two sets of experiments using position control of the gripper rods.</p>
+<p>To determine if we could utilize a force input signal, $u(t)$, to control the contact forces on an object grasped by a robot's grippers, we utilized PyBullet as a simulation environment. We used a 7 degree-of-freedom KUKA robot situated on a table as the robot performing our grasp task in simulation. We also designed a custom gripper to be the end-effector for the KUKA robot, which simply consisted of a rectangular prism base with two gripper rods attached as shown in Figure 4. The gripper has two prismatic joints, allowing each one of the gripper rods to slide along the base freely until colliding with the other gripper rod. We carried out two sets of experiments using position control of the gripper rods.</p>
 
 <figure>
 	<div>
@@ -274,7 +258,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <figcaption>Full simulation setup, with KUKA robot, gripper, and Jenga block shown.</figcaption>
 </figure>
 <p>The first set of experiments characterized the average contact force exerted on an object using feedforward position control. The test simulation would first position the robot arm such that the attached gripper is 10 cm above the object to be grasped; here, we used a Jenga block that is 15 x 5 x 3 cm, and our robot was grasping along the 3 cm dimension. The combined setup is also depicted in Figure 4. From there, the arm would descend 10 cm, and begin to close the grippers until the gripper rods made contact with the Jenga block. After contact was made, position control was initiated by instructing the grippers to penetrate deeper into the block by $x$ cm, where $x$ cm is the feedforward position control input, also described as the gripper intrusion depth. At extremely small $x$ values, the grippers would fail to maintain contact with the Jenga block, and at extremely high $x$ values, the grippers would crush the Jenga block out of its grasp, which was the reasoning behind focusing the characterization on the range discussed in the results. We conducted three trials at each $x$ value. While the gripper rods were in contact with the block, the contact forces would be measured by PyBullet at each contact point for each timestep, and the mean $\pm$ standard deviation of these contact forces was reported. During the measuring process, the wooden block was also raised up by 10 cm to the robot's original position to ensure that a stable grasp was achieved.</p>
-<p>The next set of experiments utilized proportional feedback position control to track an input force signal $u(t)$. In this case, we specified a goal contact force in Newtons, and the gripper penetration depth from the previous experiment was varied as the feedforward input to achieve the target force. At each timestep, the error between the desired force and the current force is multiplied by 10$^{-4}$ and this value is then added to the current gripper penetration depth. We utilized a variety of input force trajectories, ranging from sine waves to sawtooth waves and square waves. For each test, we utilized amplitudes, $A$, varying from 1 to 32 Newtons, and centered each wave at a DC value of 2$A$. We performed most experiments with amplitudes at $A$/4, but also tested certain simulations with amplitudes at $A$. For each timestep in the experiment, the average contact force across all contact points was reported.</p>
+<p>The next set of experiments utilized proportional feedback position control to track an input force signal $u(t)$. In this case, we specified a goal contact force in Newtons, and the gripper penetration depth from the previous experiment was varied as the feedforward input to achieve the target force. At each timestep, the error between the desired force and the current force is multiplied by $10^{-4}$ and this value is then added to the current gripper penetration depth. We utilized a variety of input force trajectories, ranging from sine waves to sawtooth waves and square waves. For each test, we utilized amplitudes, $A$, varying from 1 to 32 Newtons, and centered each wave at a DC value of $2A$. We performed most experiments with amplitudes at $A/4$, but also tested certain simulations with amplitudes at $A$. For each timestep in the experiment, the average contact force across all contact points was reported.</p>
 <h2>Results</h2>
 <h3>Force Decoding</h3>
 <p>The results of our 25 trials are depicted in Figure 5, with both individual and grouped data. We observed a significant nonlinear relationship between reported contraction strength and both signal amplitude and amplitude-frequency product ($p < 0.0001$), although the fact that we observed no similar relationship with frequency ($p = 0.2918$) suggests that the amplitude relationship is the only valid one. In addition to differences between signal features and contraction effort, two-way ANOVA on the individually-matched datasets also showed significant differences in signal features between users ($p \leq 0.0004$), as well as a significant effect of subject-effort interaction on signal features ($p < 0.0001$), for all three feature types. These results suggest that a high level of variation in system behavior between different users was present, which was no surprise, given the individual variations expected in user strength, anatomy, and sensor attachment location.</p>
@@ -291,7 +275,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <video controls="controls" width="1920" height="1080">
 	<source src="videos/Force%20Videos%20Feedforward%20position.mp4" type="video/mp4" />
 </video>
-<figcaption>Demonstration of robot grasping a jenga block using feedforward control at 10.5, 13, and 10 mm intrusion depth.</figcaption>
+<figcaption>Demonstration of robot grasping a Jenga block using feedforward control at 10.5, 13, and 10 mm intrusion depth.</figcaption>
 </figure>
 <figure>
 <img src="images/force%20vs%20gripper%20position.png" alt="description" width="648" height="546" />
@@ -303,7 +287,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <video controls="controls" width="1920" height="1080">
 	<source src="videos/Sawtooth.mp4" type="video/mp4" />
 </video>
-	<figcaption>Demonstration of robot grasping a jenga block with a sawtooth input force trajectory at 32 N amplitude. Minor deviations in the green gripper rod's position can be noted.</figcaption>
+	<figcaption>Demonstration of robot grasping a Jenga block with a sawtooth input force trajectory at 32 N amplitude. Minor deviations in the green gripper rod's position can be noted.</figcaption>
 </figure>
 
 <figure>
@@ -326,7 +310,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 
 <p>Our goal for this project is to be able to directly control the strength of a grasp force in real time using inputs decoded from AMG sensor recordings, both in simulation as well as on a physical robot platform. To this end, our intended next steps are to configure the AMG sensors in such a way that they can capture data in real time. In practice, this would require not only adjustments to the filtering and data processing pipelines, but also an $n$-point calibration of the AMG signal response before the start of every real-time recording, to which a quadratic curve can be fitted using least-squares. From there, real-time amplitude measurements can simply be plugged into the curve to determine the user's force intent.
 	</p>
-<p>If current circumstances persist and we are unable to access a physical robot, there are several improvements we could make to the simulator. The first improvement would be to test out objects of different mass and volume, examine what changes in force control might be necessary to resist varied gravitational forces. The next major step would be to sample human user AMG data after user calibration to feed into the simulator as the desired force input $u(t)$. If the robot is able to track the human user's intent without much modification to our current design, we would finally attempt to collect an AMG datastream, and use it to control the simulation robot in real-time.
+<p>If current circumstances persist and we are unable to access a physical robot, there are several improvements we could make to the simulator. The first improvement would be to test out objects of different mass and volume, and examine what changes in force control might be necessary to resist varied gravitational forces. The next major step would be to sample human user AMG data after user calibration to feed into the simulator as the desired force input $u(t)$. If the robot is able to track the human user's intent without much modification to our current design, we would finally attempt to collect an AMG datastream, and use it to control the simulation robot in real-time.
 	</p>
 
 <h2>Team Bios</h2>
@@ -337,7 +321,6 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 
 <h3 class="profileheader">Eric Hu</h3>
 <p>Eric is a senior majoring in Bioengineering with a minor in EECS, who has taken courses on robotics (EECS C106A), digital signal processing (EE 120/123), and human-oriented design (BioE C137). He has experience with EMG systems, and is interested in designing neuroprosthetics and brain-machine interfaces.
-
 	</p>
 
 <h3 class="profileheader">Fayyaz Ahamed</h3>
