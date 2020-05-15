@@ -4,6 +4,7 @@
 body {  
   margin-right: 20px;
   margin-left: 20px;
+  counter-reset: figCounter;
 }
 
 
@@ -26,7 +27,7 @@ p {
 
 
 
-img {
+img, video {
   height: 100%;
   width: 100%;
 }
@@ -36,7 +37,12 @@ img {
 figure figcaption {
 
   text-align: center;
-  margin-bottom: 100px
+  margin-bottom: 100px;
+  counter-increment: figCounter;
+}
+
+figure figcaption:before {
+	content: 'Fig.' counter(figCounter) ': ';
 }
 
 figure {
