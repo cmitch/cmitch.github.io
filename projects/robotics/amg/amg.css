@@ -12,7 +12,7 @@ h1, h2, h3, h4, h5, h6 {
 	text-align: center;
 }
 
-p {
+p, video {
   margin-top: 20px;
   margin-bottom: 100px;
 }
@@ -28,8 +28,12 @@ p {
 
 
 img, video {
-  height: 100%;
-  width: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0px;
 }
 
 
@@ -49,8 +53,8 @@ figure {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  height: 100%;
-  width: 100%;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .profileheader {
