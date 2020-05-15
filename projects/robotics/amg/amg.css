@@ -17,12 +17,22 @@ p, video {
   margin-bottom: 100px;
 }
 
+#psp {
+  margin-bottom: 10px;
+}
 
+/*
 #equation {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+}
+*/
+
+#equation {
+  margin-top: 0px;
+  text-align: center;
 }
 
 

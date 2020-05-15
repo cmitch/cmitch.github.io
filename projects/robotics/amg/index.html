@@ -189,10 +189,14 @@ Robotics has been slowly becoming a stable in the medical field. While electrica
 
 
 <h3>Post-Signal Processing</h3>
-<p>To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in (1), where $Fout$ is the muscle output force, $n$ is the number of recruited fibers, $Favg$ is the average fiber output force, $A$ is the amplitude, $nu$ is the frequency, and $\alpha$ is a constant.</p>
+<p id="psp">To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in (1), where $Fout$ is the muscle output force, $n$ is the number of recruited fibers, $Favg$ is the average fiber output force, $A$ is the amplitude, $nu$ is the frequency, and $\alpha$ is a constant.</p>
 
-
+<!--
 <img src="images/equation.png" alt="Force is in theory proportional to amplitude and frequency" id="equation" />
+
+-->
+
+<div id="equation">$F_m = n F_f = \alpha A v$</div>
 
 
 <p>For each of our 25 trials, we detrended the raw signal, removed outliers, and delineated the start and end of each contraction period manually. For the amplitude parameter, we took the difference between the upper and lower root-mean-square envelopes of the signal using a 1000-sample (0.5 s) window (Figure 3A), and calculated the mean amplitude for each contraction period. Due to individual variations in signal strength, we scaled each signal such that the mean amplitude at baseline (0% contraction) was set at 1.</p>
