@@ -64,13 +64,13 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 </table>
 
 <p>
-	AMG is essentially a glorified microphone, functioning like a muscle stethoscope. Just as an EMG senses differences in voltage, an AMG senses the mechanical/acoustic waves produced by one's arm during muscle contraction. Like sEMG, this technique has proven to be reliable, low-cost, and noninvasive, allowing it to work as an onboard sensor for assistive devices with minimal hinderance. Note that for the purposes of our experiments, we used AMG sensors designed for equine subjects throughout this project.
+	AMG is essentially a glorified microphone, functioning like a muscle stethoscope. Just as an EMG senses differences in voltage, an AMG senses the mechanical/acoustic waves produced by one's arm during muscle contraction. Like sEMG, this technique has proven to be reliable, low-cost, and noninvasive, allowing it to work as an onboard sensor for assistive devices with minimal hinderance. However, AMG has several benefits over sEMG: namely, it provides a greater resistance to external noise, it is capable of recording more deeply than sEMG allows, the sensor does not need to be frequently replaced, and signal quality is not compromised by dust, hair or sweat.
 	</p>
 
 <h3>Goal of Project</h3>
 
 <p>
-	Prior work has suggested a mathematical relationship between the features of the AMG signal and the force the muscle is exerting. Our aim is to use this signal as a feedforward control input into a robot. From this foundation, the user could control the force a robot uses for tasks such as grasping both rigid and soft objects, compensatory force application, or indirect control. Due to the university shutdown and lack of access to hardware, we sought to implement this force control with a simulated robotic grasp, using the AMG force signal as the desired contact force.
+	Prior work has suggested a direct, linear relationship between the features of the AMG signal and the force the muscle is exerting. Our aim is to use this signal as a feedforward control input into a robot, leveraging AMG's benefits to provide more accurate force inputs than traditional sEMG allows. From this foundation, the user could control the force a robot uses for tasks such as grasping both rigid and soft objects, compensatory force application, or indirect control. Due to the university shutdown and lack of access to hardware, we sought to implement this force control with a simulated robotic grasp, by finding a method of decoding force intent from the AMG output signal.
 
 <figure>
 	<img src="images/flow_chart.png" alt="Control Flow Chart" />
