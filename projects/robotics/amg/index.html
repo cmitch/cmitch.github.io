@@ -199,8 +199,20 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 	<figcaption>Mean frequency calculated within specified bounds</figcaption>
 </figure>
 
-<h3>Signal Processing Analysis</h3>
 
+<h3>Simulation Setup</h3>
+<p>To determine if we could utilize a force input signal, $u(t)$, to control the contact forces on an object grasped by a robot's grippers, we utilized PyBullet as a simulation environment. We used a 7 degree-of-freedom KUKA robot situated on a table as the robot performing our grasp task in simulation. We also designed a custom gripper to be the end-effector for the KUKA robot, which simply consisted of a rectangular prism base with two gripper rods attached as shown in Figure 4. The gripper has two prismatic joints, allowing each one of the gripper rods to slide along the base freely until colliding with the other gripper rod. We carried out two sets of experiments using position control of the gripper rods.</p>
+
+<figure>
+	<div>
+<img src="images/simulation_setup.png" alt="Simulation Setup" />
+</div>
+<figcaption>Full simulation setup, with KUKA robot, gripper, and Jenga block shown.</figcaption>
+</figure>
+<p>The first set of experiments characterized the average contact force exerted on an object using feedforward position control. The test simulation would first position the robot arm such that the attached gripper is 10 cm above the object to be grasped; here, we used a Jenga block that is 15 x 5 x 3 cm, and our robot was grasping along the 3 cm dimension. The combined setup is also depicted in Figure 4. From there, the arm would descend 10 cm, and begin to close the grippers until the gripper rods made contact with the Jenga block. After contact was made, position control was initiated by instructing the grippers to penetrate deeper into the block by $x$ cm, where $x$ cm is the feedforward position control input, also described as the gripper intrusion depth. At extremely small $x$ values, the grippers would fail to maintain contact with the Jenga block, and at extremely high $x$ values, the grippers would crush the Jenga block out of its grasp, which was the reasoning behind focusing the characterization on the range discussed in the results. We conducted three trials at each $x$ value. While the gripper rods were in contact with the block, the contact forces would be measured by PyBullet at each contact point for each timestep, and the mean $\pm$ standard deviation of these contact forces was reported. During the measuring process, the wooden block was also raised up by 10 cm to the robot's original position to ensure that a stable grasp was achieved.</p>
+<p>The next set of experiments utilized proportional feedback position control to track an input force signal $u(t)$. In this case, we specified a goal contact force in Newtons, and the gripper penetration depth from the previous experiment was varied as the feedforward input to achieve the target force. At each timestep, the error between the desired force and the current force is multiplied by $10^{-4}$ and this value is then added to the current gripper penetration depth. We utilized a variety of input force trajectories, ranging from sine waves to sawtooth waves and square waves. For each test, we utilized amplitudes, $A$, varying from 1 to 32 Newtons, and centered each wave at a DC value of $2A$. We performed most experiments with amplitudes at $A/4$, but also tested certain simulations with amplitudes at $A$. For each timestep in the experiment, the average contact force across all contact points was reported.</p>
+<h2>Results</h2>
+<h3>Force Decoding</h3>
 <figure>
 	<table>
 		<tr>
@@ -243,25 +255,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 </table>
 <figcaption>Graphs of change in frequency-amplitude product in response to changes of force</figcaption>
 </figure>
-
-
-
-
-
-<h3>Simulation Setup</h3>
-<p>To determine if we could utilize a force input signal, $u(t)$, to control the contact forces on an object grasped by a robot's grippers, we utilized PyBullet as a simulation environment. We used a 7 degree-of-freedom KUKA robot situated on a table as the robot performing our grasp task in simulation. We also designed a custom gripper to be the end-effector for the KUKA robot, which simply consisted of a rectangular prism base with two gripper rods attached as shown in Figure 4. The gripper has two prismatic joints, allowing each one of the gripper rods to slide along the base freely until colliding with the other gripper rod. We carried out two sets of experiments using position control of the gripper rods.</p>
-
-<figure>
-	<div>
-<img src="images/simulation_setup.png" alt="Simulation Setup" />
-</div>
-<figcaption>Full simulation setup, with KUKA robot, gripper, and Jenga block shown.</figcaption>
-</figure>
-<p>The first set of experiments characterized the average contact force exerted on an object using feedforward position control. The test simulation would first position the robot arm such that the attached gripper is 10 cm above the object to be grasped; here, we used a Jenga block that is 15 x 5 x 3 cm, and our robot was grasping along the 3 cm dimension. The combined setup is also depicted in Figure 4. From there, the arm would descend 10 cm, and begin to close the grippers until the gripper rods made contact with the Jenga block. After contact was made, position control was initiated by instructing the grippers to penetrate deeper into the block by $x$ cm, where $x$ cm is the feedforward position control input, also described as the gripper intrusion depth. At extremely small $x$ values, the grippers would fail to maintain contact with the Jenga block, and at extremely high $x$ values, the grippers would crush the Jenga block out of its grasp, which was the reasoning behind focusing the characterization on the range discussed in the results. We conducted three trials at each $x$ value. While the gripper rods were in contact with the block, the contact forces would be measured by PyBullet at each contact point for each timestep, and the mean $\pm$ standard deviation of these contact forces was reported. During the measuring process, the wooden block was also raised up by 10 cm to the robot's original position to ensure that a stable grasp was achieved.</p>
-<p>The next set of experiments utilized proportional feedback position control to track an input force signal $u(t)$. In this case, we specified a goal contact force in Newtons, and the gripper penetration depth from the previous experiment was varied as the feedforward input to achieve the target force. At each timestep, the error between the desired force and the current force is multiplied by $10^{-4}$ and this value is then added to the current gripper penetration depth. We utilized a variety of input force trajectories, ranging from sine waves to sawtooth waves and square waves. For each test, we utilized amplitudes, $A$, varying from 1 to 32 Newtons, and centered each wave at a DC value of $2A$. We performed most experiments with amplitudes at $A/4$, but also tested certain simulations with amplitudes at $A$. For each timestep in the experiment, the average contact force across all contact points was reported.</p>
-<h2>Results</h2>
-<h3>Force Decoding</h3>
-<p>The results of our 25 trials are depicted in Figure 5, with both individual and grouped data. We observed a significant nonlinear relationship between reported contraction strength and both signal amplitude and amplitude-frequency product ($p < 0.0001$), although the fact that we observed no similar relationship with frequency ($p = 0.2918$) suggests that the amplitude relationship is the only valid one. In addition to differences between signal features and contraction effort, two-way ANOVA on the individually-matched datasets also showed significant differences in signal features between users ($p \leq 0.0004$), as well as a significant effect of subject-effort interaction on signal features ($p < 0.0001$), for all three feature types. These results suggest that a high level of variation in system behavior between different users was present, which was no surprise, given the individual variations expected in user strength, anatomy, and sensor attachment location.</p>
+<p>The results of our 25 trials are depicted in Figures 15-17, with both individual and grouped data. We observed a significant nonlinear relationship between reported contraction strength and both signal amplitude and amplitude-frequency product ($p < 0.0001$), although the fact that we observed no similar relationship with frequency ($p = 0.2918$) suggests that the amplitude relationship is the only valid one. In addition to differences between signal features and contraction effort, two-way ANOVA on the individually-matched datasets also showed significant differences in signal features between users ($p \leq 0.0004$), as well as a significant effect of subject-effort interaction on signal features ($p < 0.0001$), for all three feature types. These results suggest that a high level of variation in system behavior between different users was present, which was no surprise, given the individual variations expected in user strength, anatomy, and sensor attachment location.</p>
 
 <h3>Force Control in Simulation</h3>
 
