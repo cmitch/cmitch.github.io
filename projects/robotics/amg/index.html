@@ -102,13 +102,13 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 		<td>
 			<figure>
 			<img src="images/circuitry.png" alt="Arduino Sensor Circuitry" />
-			<figcaption>Post-processing circuitry</figcaption>
+			<figcaption>Real-time analog processing circuitry</figcaption>
 		</figure>
 		</td>
 		<td>
 			<figure>
 				<img src="images/arduino_sensor_setup.png" alt="Arduino Sensor Setup" />
-				<figcaption>Arduino sensor setup</figcaption>
+				<figcaption>Real-time Arduino-sensor setup</figcaption>
 			</figure>
 		</td>
 	</tr>
@@ -174,14 +174,14 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 
 
 <h3>Post-Signal Processing</h3>
-<p id="psp">To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force [1]. As a result, our hypothesized relationship is summarized in (1), where $Fout$ is the muscle output force, $n$ is the number of recruited fibers, $Favg$ is the average fiber output force, $A$ is the amplitude, $nu$ is the frequency, and $\alpha$ is a constant.</p>
+<p id="psp">To identify a method for decoding force intent given a raw AMG signal, we decided to look at three parameters of the signal: amplitude, frequency, and the amplitude-frequency product. Signal amplitude was expected to relate to the spatial summation of muscle fiber firings (i.e. the number of fibers recruited), while frequency was related to temporal summation of muscle fiber firings, which controls the extent of muscle contraction. Software designed for the CURO is capable of calculating a proprietary ESTi score, which is effectively a product of spatial and temporal summation parameters, that has been shown to correlate linearly with muscle output power or force. As a result, our hypothesized relationship is summarized in (1), where $F_{out}$ is the muscle output force, $n$ is the number of recruited fibers, $F_{avg}$ is the average fiber output force, $A$ is the amplitude, $\nu$ is the frequency, and $\alpha$ is a constant.</p>
 
 <!--
 <img src="images/equation.png" alt="Force is in theory proportional to amplitude and frequency" id="equation" />
 
 -->
 
-<div id="equation">$F_m = n F_f = \alpha A v$</div>
+<div id="equation">$F_m = n F_{avg} = \alpha A \nu$</div>
 
 
 <p>For each of our 25 trials, we detrended the raw signal, removed outliers, and delineated the start and end of each contraction period manually. For the amplitude parameter, we took the difference between the upper and lower root-mean-square envelopes of the signal using a 1000-sample (0.5 s) window (Figure 3A), and calculated the mean amplitude for each contraction period. Due to individual variations in signal strength, we scaled each signal such that the mean amplitude at baseline (0% contraction) was set at 1.</p>
@@ -192,7 +192,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 </figure>
 
 
-<p>To determine the frequency parameter, we took each individual contraction period, and multiplied it with a Hann window of the same length, to reduce spectral leakage around active frequencies. We then used MATLAB's meanfreq function to calculate the mean frequency of each contraction period between 2 and 500 Hz (Figure 3B), which encapsulates the full working frequencies of active muscle [1]. Because rapid spikes/outliers are strongly delocalized in the frequency domain, much care needed to be taken to remove them manually.</p>
+<p>To determine the frequency parameter, we took each individual contraction period, and multiplied it with a Hann window of the same length, to reduce spectral leakage around active frequencies. We then used MATLAB's meanfreq function to calculate the mean frequency of each contraction period between 2 and 500 Hz (Figure 3B), which encapsulates the full working frequencies of active muscle. Because rapid spikes/outliers are strongly delocalized in the frequency domain, much care needed to be taken to remove them manually.</p>
 
 <figure>
 	<img src="images/mean_freq.png" alt="Mean Frequency Calculation" />
@@ -288,12 +288,12 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <img src="images/example_waves.png" alt="Example Wave Control Input" />
 <figcaption>Observed average contact force on block vs. time with proportional feedback gripper position control for Left: 1 Hz sine Wave with 32 N amplitude centered at 64 N, Middle: 1 Hz sawtooth wave with 4 N amplitude centered at 32 N, Right: 1 Hz square wave with amplitude 0.5 N centered at 4 N.</figcaption>
 </figure>
-<p>Three example graphs depicting results of the proportional feedback position control experiment are shown in Figure 7. Supplemental data is located <a href="supplemental_data.html">here</a>. In these experiments, we made the desired input force trajectories sine, sawtooth, or square waves at 1 Hz with amplitudes $A$ ranging from 1 to 32 Newtons centered at 2$A$. We found that the average contact force generally tracks the desired contact force relatively well across each trajectory. The amplitudes and DC value are exactly as expected across the different amplitudes, ranging from the low force case of 1 N all the way to the maximum of about 100 N in the 32 N case. However, there is a bit of a discrepancy in the exact frequency of the output wave. Most of the waves appear to have a period of about 1.1-1.2 seconds, which means that the frequency of the experienced average contact force trajectory varies between 0.83 and 0.91 Hz, instead of the expected 1 Hz wave. However, since all simulations regardless of input force trajectory have this shift in expected frequency from 1 Hz to slightly less than 1 Hz, this suggests that this may be a discrepancy caused by simulation in PyBullet, or by intermediate calculations in the simulation causing a systemic slow-down effect.</p>
+<p>Three example graphs depicting results of the proportional feedback position control experiment are shown in Figure 7. Supplemental data is located <a href="supplemental_data.html">here</a>. In these experiments, we made the desired input force trajectories sine, sawtooth, or square waves at 1 Hz with amplitudes $A$ ranging from 1 to 32 Newtons centered at $2A$. We found that the average contact force generally tracks the desired contact force relatively well across each trajectory. The amplitudes and DC value are exactly as expected across the different amplitudes, ranging from the low force case of 1 N all the way to the maximum of about 100 N in the 32 N case. However, there is a bit of a discrepancy in the exact frequency of the output wave. Most of the waves appear to have a period of about 1.1-1.2 seconds, which means that the frequency of the experienced average contact force trajectory varies between 0.83 and 0.91 Hz, instead of the expected 1 Hz wave. However, since all simulations regardless of input force trajectory have this shift in expected frequency from 1 Hz to slightly less than 1 Hz, this suggests that this may be a discrepancy caused by simulation in PyBullet, or by intermediate calculations in the simulation causing a systemic slow-down effect.</p>
 <p>Of special note are the square wave experiments because the sudden discontinuities in the square wave trajectory would largely mimic a human user's force trajectory when grasping an object remotely: they would start at a very low force, and quickly reach the force necessary to grasp the object and remain at that steady-state force value. We found that the measured force trajectory strongly matched the desired force input $u(t)$ with minor overshoot before settling to the correct steady-state value. In addition, the aforementioned minor changes in frequency and some transient stutters in the output force in the 32 N experiment were present. Overall, the simulation results suggest that the proportional feedback position control works very effectively both at maintaining steady-state forces and quickly adapting to sudden changes in desired force. In addition to the sine and square wave trajectories, we tested out sawtooth waves at the same amplitudes, in which we saw similar overshoot and settling as seen in the square waves.
 
 <h2>Conclusion</h2>
 
-<p>Based on our force response characterization, we conclude that there is a roughly parabolic relationship between AMG rms signal amplitude and user-reported muscle force, and no relationship with frequency. The fact that we see no difference in frequency could be due to an error in attaching the sensors during recording, or a lack of robust filtering during the data processing stage; as mentioned previously, the presence of small spikes or impulses can quickly skew the entire signal spectrum toward much higher frequencies, and shift the average.
+<p>Based on our force response characterization, we conclude that there is a roughly parabolic relationship between AMG rms signal amplitude and user-reported muscle force, and no relationship with frequency. The fact that we see no difference in frequency could be due to an error in attaching the sensors during recording, or a lack of robust filtering during the data processing stage; as mentioned previously, the presence of small spikes or impulses can quickly skew the entire signal spectrum toward much higher frequencies, thereby shifting the average.
 	</p>
 <p>Originally, we planned to correlate AMG signal parameters with the actual magnitude of force exerted by the user. However, due to the difficulty of measuring muscle tension and output force in real-time, we ended up correlating the signal parameters to subjective effort levels instead. While this approach prevents us from ascertaining any fixed relationship between AMG signal and output force, it has one major benefit: it allows us to gauge AMG characteristics with respect to the user's expected output force, instead of their actual output force, meaning that the approach naturally accounts for errors between these forces. This means that a user operating our system could control a decoded force output that feels linear, even if the physical forces involved are actually quadratic.
 	</p>
