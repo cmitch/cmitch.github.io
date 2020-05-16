@@ -24,8 +24,11 @@
 </head>
 
 <body>
-<h1>EECS 106B: Acoustic Myography (AMG) for Robotic Force Control</h1>
-<h6>Chris Mitchell, Eric Hu, Fayyaz Ahamed</h6>
+<h1>EECS 106B Final Project: <br>
+Using Acoustic Myography for Robotic Force Control</h1>
+<h3>Chris Mitchell, Eric Hu, Fayyaz Ahamed</h3>
+
+<hr>
 
 <h2>Project Overview</h2>
 <figure>
@@ -67,7 +70,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 	AMG is essentially a glorified microphone, functioning like a muscle stethoscope. Just as an EMG senses differences in voltage, an AMG senses the mechanical/acoustic waves produced by one's arm during muscle contraction. Like sEMG, this technique has proven to be reliable, low-cost, and noninvasive, allowing it to work as an onboard sensor for assistive devices with minimal hinderance. However, AMG has several benefits over sEMG: namely, it provides a greater resistance to external noise, it is capable of recording more deeply than sEMG allows, the sensor does not need to be frequently replaced, and signal quality is not compromised by dust, hair or sweat.
 	</p>
 
-<h3>Goal of Project</h3>
+<h3>Project Goals</h3>
 
 <p>
 	Prior work has suggested a direct, linear relationship between the features of the AMG signal and the force the muscle is exerting. Our aim is to use this signal as a feedforward control input into a robot, leveraging AMG's benefits to provide more accurate force inputs than traditional sEMG allows. From this foundation, the user could control the force a robot uses for tasks such as grasping both rigid and soft objects, compensatory force application, or indirect control. Due to the university shutdown and lack of access to hardware, we sought to implement this force control with a simulated robotic grasp, by finding a method of decoding force intent from the AMG output signal.
@@ -76,6 +79,8 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 	<img src="images/flow_chart.png" alt="Control Flow Chart" />
 	<figcaption>AMG Force Control Flow Chart</figcaption>
 </figure>
+
+<hr>
 
 <h2>Implementation</h2>
 <p> Our code repository is located <a href="https://github.com/cmitch/final_proj_106b">here</a> and our report is located <a href="EECS106B_Final_Report.pdf">here</a>.
@@ -211,6 +216,9 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 </figure>
 <p>The first set of experiments characterized the average contact force exerted on an object using feedforward position control. The test simulation would first position the robot arm such that the attached gripper is 10 cm above the object to be grasped; here, we used a Jenga block that is 15 x 5 x 3 cm, and our robot was grasping along the 3 cm dimension. The combined setup is also depicted in Figure 14. From there, the arm would descend 10 cm, and begin to close the grippers until the gripper rods made contact with the Jenga block. After contact was made, position control was initiated by instructing the grippers to penetrate deeper into the block by $x$ cm, where $x$ cm is the feedforward position control input, also described as the gripper intrusion depth. At extremely small $x$ values, the grippers would fail to maintain contact with the Jenga block, and at extremely high $x$ values, the grippers would crush the Jenga block out of its grasp, which was the reasoning behind focusing the characterization on the range discussed in the results. We conducted three trials at each $x$ value. While the gripper rods were in contact with the block, the contact forces would be measured by PyBullet at each contact point for each timestep, and the mean $\pm$ standard deviation of these contact forces was reported. During the measuring process, the wooden block was also raised up by 10 cm to the robot's original position to ensure that a stable grasp was achieved.</p>
 <p>The next set of experiments utilized proportional feedback position control to track an input force signal $u(t)$. In this case, we specified a goal contact force in Newtons, and the gripper penetration depth from the previous experiment was varied as the feedforward input to achieve the target force. At each timestep, the error between the desired force and the current force is multiplied by $10^{-4}$ and this value is then added to the current gripper penetration depth. We utilized a variety of input force trajectories, ranging from sine waves to sawtooth waves and square waves. For each test, we utilized amplitudes, $A$, varying from 1 to 32 Newtons, and centered each wave at a DC value of $2A$. We performed most experiments with amplitudes at $A/4$, but also tested certain simulations with amplitudes at $A$. For each timestep in the experiment, the average contact force across all contact points was reported.</p>
+
+<hr>
+
 <h2>Results</h2>
 <h3>Force Decoding</h3>
 <figure>
@@ -293,6 +301,8 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <p>Of special note are the square wave experiments because the sudden discontinuities in the square wave trajectory would largely mimic a human user's force trajectory when grasping an object remotely: they would start at a very low force, and quickly reach the force necessary to grasp the object and remain at that steady-state force value. We found that the measured force trajectory strongly matched the desired force input $u(t)$ with minor overshoot before settling to the correct steady-state value. In addition, the aforementioned minor changes in frequency and some transient stutters in the output force in the 32 N experiment were present. Overall, the simulation results suggest that the proportional feedback position control works very effectively both at maintaining steady-state forces and quickly adapting to sudden changes in desired force. In addition to the sine and square wave trajectories, we tested out sawtooth waves at the same amplitudes, in which we saw similar overshoot and settling as seen in the square waves.
 	</p>
 
+<hr>
+
 <h2>Conclusion</h2>
 
 <p>Based on our force response characterization, we conclude that there is a roughly parabolic relationship between AMG rms signal amplitude and user-reported muscle force, and no relationship with frequency. The fact that we see no difference in frequency could be due to an error in attaching the sensors during recording, or a lack of robust filtering during the data processing stage; as mentioned previously, the presence of small spikes or impulses can quickly skew the entire signal spectrum toward much higher frequencies, thereby shifting the average.
@@ -302,6 +312,8 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <p>In seeking to actuate a force input signal $u(t)$, we designed a robust proportional feedback position controller in simulation. We found that across a variety of signal amplitudes and trajectories, the contact forces closely matched the desired input force trajectory, with the only minor drawback being a slight decrease in frequency. Unfortunately, there are several aspects of our simulation that may prevent our results from working identically on physical platforms. Our proportional feedback utilized the difference between the desired force and the current average contact force to conduct error correction. In simulation, we have perfect knowledge of those contact forces; however, in reality, we would require some sort of sensor attached to either the wooden block or the grippers to provide a real-time estimate of the contact force. Alternatively, we could calculate the grasping contact forces based on torques applied at the joints. Nevertheless, there will always some uncertainty in the real-time force value returned to the controller by either of these methods, which will make our controller less reliable in reality.
 	</p>
 
+<hr>
+
 <h2>Future Work</h2>
 
 <p>Our goal for this project is to be able to directly control the strength of a grasp force in real time using inputs decoded from AMG sensor recordings, both in simulation as well as on a physical robot platform. To this end, our intended next steps are to configure the AMG sensors in such a way that they can capture data in real time. In practice, this would require not only adjustments to the filtering and data processing pipelines, but also an $n$-point calibration of the AMG signal response before the start of every real-time recording, to which a quadratic curve can be fitted using least-squares. From there, real-time amplitude measurements can simply be plugged into the curve to determine the user's force intent.
@@ -309,7 +321,9 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 <p>If current circumstances persist and we are unable to access a physical robot, there are several improvements we could make to the simulator. The first improvement would be to test out objects of different mass and volume, and examine what changes in force control might be necessary to resist varied gravitational forces. The next major step would be to sample human user AMG data after user calibration to feed into the simulator as the desired force input $u(t)$. If the robot is able to track the human user's intent without much modification to our current design, we would finally attempt to collect an AMG datastream, and use it to control the simulation robot in real-time.
 	</p>
 
-<h2>Team Bios</h2>
+<hr>
+
+<h2>Team Members</h2>
 
 <h3 class="profileheader">Chris Mitchell</h3>
 <p>Chris is an Electrical Engineeering and Computer Science (EECS) major doubling in Linguistics at UC Berkeley, class of 2020. His primary research interests involve applying the combination of robotics and interdisciplinary techniques in order to progress the biomedical field and improve assistive technology.
