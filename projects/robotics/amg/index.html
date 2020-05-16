@@ -197,7 +197,7 @@ Robotics has been slowly becoming a staple in the medical field. While sensing t
 </figure>
 
 
-<p>To determine the frequency parameter, we took each individual contraction period, and multiplied it with a Hann window of the same length, to reduce spectral leakage around active frequencies. We then used MATLAB's meanfreq function to calculate the mean frequency of each contraction period between 2 and 500 Hz (Figure 13), which encapsulates the full working frequencies of active muscle [1]. Because rapid spikes/outliers are strongly delocalized in the frequency domain, much care needed to be taken to remove them manually.</p>
+<p>To determine the frequency parameter, we took each individual contraction period, and multiplied it with a Hann window of the same length, to reduce spectral leakage around active frequencies. We then used MATLAB's meanfreq function to calculate the mean frequency of each contraction period between 2 and 500 Hz (Figure 13), which encapsulates the full working frequencies of active muscle. Because rapid spikes/outliers are strongly delocalized in the frequency domain, much care needed to be taken to remove them manually.</p>
 
 <figure>
 	<img src="images/mean_freq.png" alt="Mean Frequency Calculation" />
